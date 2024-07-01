@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour
         //過去の位置の更新
         pastPos = currentPos;
 
-        if(delta == Vector3.zero)
+        if (delta == Vector3.zero)
         {
             return;
         }
@@ -135,24 +135,24 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Jump()
     {
-        if(isGround && Input.GetKeyDown(KeyCode.Space))
+        if (isGround && Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("ジャンプ");
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
-    
+
     /// <summary>
     /// アニメーションの再生
     /// </summary>
     private void PlayAnim()
     {
-        if(Input.GetMouseButtonDown(0) && !isAttack && !isCharging)
+        if (Input.GetMouseButtonDown(0) && !isAttack && !isCharging)
         {
             Attack();
         }
 
-        if(Input.GetMouseButton(1) && !isAttack && !isCharging)
+        if (Input.GetMouseButton(1) && !isAttack && !isCharging)
         {
             ChargeAttack();
         }
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
 
         animator.SetBool("isRun", isRun);
     }
-    
+
     /// <summary>
     /// 攻撃の処理
     /// </summary>
@@ -193,7 +193,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void TakeDamage()
     {
-        if(!isDamage)
+        if (!isDamage)
         {
             isDamage = true;
             animator.SetTrigger("Damage");
@@ -234,7 +234,7 @@ public class PlayerController : MonoBehaviour
     #region 接地判定
     private void OnCollisionEnter(Collision collision)
     {
-        if((groundLayers & (1 << collision.gameObject.layer)) != 0)
+        if ((groundLayers & (1 << collision.gameObject.layer)) != 0)
         {
             Debug.Log("接地");
             isGround = true;
@@ -243,7 +243,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if((groundLayers & (1 << collision.gameObject.layer)) != 0)
+        if ((groundLayers & (1 << collision.gameObject.layer)) != 0)
         {
             Debug.Log("離陸");
             isGround = false;

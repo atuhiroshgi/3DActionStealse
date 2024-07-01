@@ -18,8 +18,6 @@ public class CameraController : MonoBehaviour
     }
     void Update()
     {
-        //------カメラの移動------
-
         //プレイヤーの現在地の取得
         currentPos = player.transform.position;
 
@@ -28,9 +26,6 @@ public class CameraController : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, transform.position + diff, 1.0f);//カメラをプレイヤーの移動差分だけうごかすよ
 
         pastPos = currentPos;
-
-
-        //------カメラの回転------
 
         // マウスの移動量を取得
         float mx = Input.GetAxis("Mouse X");

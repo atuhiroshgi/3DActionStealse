@@ -6,23 +6,25 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     #region SerializeField
-    [SerializeField] private GameObject cam;
-    [SerializeField] private Rigidbody rb;
     [SerializeField] private Animator animator;
     [SerializeField] private LayerMask groundLayers;        //地面判定をするためのレイヤー
+    [SerializeField] private float moveSpeedIn;             //プレイヤーの移動速度を入力
+    [SerializeField] private float maxAngVelo;              //最大の回転角速度
+    [SerializeField] private float smoothTime = 0.1f;       //進行方向にかかる時間
+    [SerializeField] private float jumpForce = 6f;          //ジャンプの高さを入力
     #endregion
 
     #region private変数
-    private Quaternion cameraRot;       //カメラの角度
-    private Quaternion characterRot;    //プレイヤーの角度
-    private float playerX;              //プレイヤーのX座標
-    private float playerZ;              //プレイヤーのZ座標
-    private float camMinX = -30f;       //カメラが向ける角度の最小値
-    private float camMaxX = 30f;        //カメラが向ける角度の最大値
-    private float Xsensityvity = 3f;    //カメラの感度
-    private float Ysensityvity = 3f;    //カメラの感度
-    private float moveSpeed = 5f;
-    private float jumpForce = 6f;
+    private Rigidbody rb;
+    private Vector3 moveSpeed;          //プレイヤーの移動速度
+    private Vector3 currentPos;         //プレイヤーの現在の位置
+    private Vector3 pastPos;            //プレイヤーの過去の位置
+    private Vector3 delta;              //プレイヤーの移動量
+    private Quaternion playerRot;       //プレイヤーの角度
+    private Quaternion nextRot;         //どれだけ回転するか
+    private float currentAngVelo;       //現在の回転角速度
+    private float diffAngle;            //現在の向きと進行方向の角度
+    private float rotAngle;             //現在の回転する角度
     private float attackDuration = 0.8f;//攻撃アニメーションの長さ
     private float attackTimer;          //攻撃時間の計算用
     private float chargeDuration = 0.6f;//チャージアニメーションの長さ
@@ -38,13 +40,13 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        cameraRot = cam.transform.localRotation;
-        characterRot = transform.localRotation;
+        rb = GetComponent<Rigidbody>();
+        pastPos = transform.position;
     }
 
     private void Update()
     {
-        RotateCamera();
+        RotatePlayer();
         Jump();
         PlayAnim();
 
@@ -65,47 +67,67 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void MovePlayer()
     {
-        playerX = 0;
-        playerZ = 0;
+        //カメラに対して前を取得
+        Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
+        //カメラに対して右を取得
+        Vector3 cameraRight = Vector3.Scale(Camera.main.transform.right, new Vector3(1, 0, 1)).normalized;
 
-        playerX = Input.GetAxisRaw("Horizontal");
-        playerZ = Input.GetAxisRaw("Vertical");
+        //moveVelocityを0で初期化する
+        moveSpeed = Vector3.zero;
 
-        //カメラの向きに応じた移動ベクトルを計算
-        Vector3 moveDirection = cam.transform.forward * playerZ + cam.transform.right * playerX;
-
-        //Y軸の移動は無視する(地面に沿って移動する)
-        moveDirection.y = 0f;   
-
-        if(moveDirection.magnitude > 0)
+        //移動入力
+        if (Input.GetKey(KeyCode.W))
         {
-            isRun = true;
-            transform.forward = moveDirection.normalized;
+            moveSpeed += moveSpeedIn * cameraForward;
         }
-        else
+        if (Input.GetKey(KeyCode.A))
         {
-            isRun = false;
+            moveSpeed -= moveSpeedIn * cameraRight;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            moveSpeed -= moveSpeedIn * cameraForward;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            moveSpeed += moveSpeedIn * cameraRight;
         }
 
-        rb.MovePosition(transform.position + moveDirection.normalized * moveSpeed * Time.fixedDeltaTime);
+        rb.velocity = moveSpeed;
+
+        isRun = moveSpeed != Vector3.zero;
     }
 
     /// <summary>
-    /// カメラの向きの制御
+    /// プレイヤーの向きの制御
     /// </summary>
-    private void RotateCamera()
+    private void RotatePlayer()
     {
-        float xRot = Input.GetAxis("Mouse X") * Xsensityvity;
-        float yRot = Input.GetAxis("Mouse Y") * Ysensityvity;
+        //現在の位置
+        currentPos = transform.position;
 
-        //カメラの回転
-        cameraRot *= Quaternion.Euler(-yRot, 0, 0);
-        cameraRot = ClampRotation(cameraRot);
-        cam.transform.localRotation = cameraRot;
+        //移動量の計算
+        delta = currentPos - pastPos;
+        delta.y = 0;
 
-        //プレイヤーの回転
-        characterRot *= Quaternion.Euler(0, xRot, 0);
-        transform.localRotation = characterRot;
+        //過去の位置の更新
+        pastPos = currentPos;
+
+        if(delta == Vector3.zero)
+        {
+            return;
+        }
+
+        playerRot = Quaternion.LookRotation(delta, Vector3.up);
+
+        diffAngle = Vector3.Angle(transform.forward, delta);
+
+        //Vector3.SmoothDampで値を徐々に変化
+        rotAngle = Mathf.SmoothDampAngle(0, diffAngle, ref currentAngVelo, smoothTime, maxAngVelo);
+
+        nextRot = Quaternion.RotateTowards(transform.rotation, playerRot, rotAngle);
+
+        transform.rotation = nextRot;
     }
 
     /// <summary>
@@ -115,30 +137,11 @@ public class PlayerController : MonoBehaviour
     {
         if(isGround && Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log("ジャンプ");
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
     
-    /// <summary>
-    /// カメラの角度制限
-    /// </summary>
-    /// <param name="q">カメラの角度</param>
-    /// <returns>制限後のカメラの角度</returns>
-    private Quaternion ClampRotation(Quaternion q)
-    {
-        q.x /= q.w;
-        q.y /= q.w;
-        q.z /= q.w;
-        q.w = 1f;
-
-        float angleX = Mathf.Atan(q.x) * Mathf.Rad2Deg * 2f;
-        angleX = Mathf.Clamp(angleX,camMinX, camMaxX);
-
-        q.x = Mathf.Tan(angleX * Mathf.Deg2Rad * 0.5f);
-
-        return q;
-    }
-
     /// <summary>
     /// アニメーションの再生
     /// </summary>
@@ -153,6 +156,7 @@ public class PlayerController : MonoBehaviour
         {
             ChargeAttack();
         }
+
         if (isDamage)
         {
             TakeDamage();
@@ -232,6 +236,7 @@ public class PlayerController : MonoBehaviour
     {
         if((groundLayers & (1 << collision.gameObject.layer)) != 0)
         {
+            Debug.Log("接地");
             isGround = true;
         }
     }
@@ -240,6 +245,7 @@ public class PlayerController : MonoBehaviour
     {
         if((groundLayers & (1 << collision.gameObject.layer)) != 0)
         {
+            Debug.Log("離陸");
             isGround = false;
         }
     }

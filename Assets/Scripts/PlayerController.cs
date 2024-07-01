@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
 {
     #region SerializeField
     [SerializeField] private GameObject cam;
-    [SerializeField] private Transform groundCheckPoint;    //接地判定のための座標
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private Animator animator;
     [SerializeField] private LayerMask groundLayers;        //地面判定をするためのレイヤー
     #endregion
 
@@ -22,22 +22,37 @@ public class PlayerController : MonoBehaviour
     private float Xsensityvity = 3f;    //カメラの感度
     private float Ysensityvity = 3f;    //カメラの感度
     private float moveSpeed = 5f;
-    private float jumpForce = 10f;
-    private bool isGround;
+    private float jumpForce = 6f;
+    private float attackDuration = 0.8f;//攻撃アニメーションの長さ
+    private float attackTimer;          //攻撃時間の計算用
+    private float chargeDuration = 0.6f;//チャージアニメーションの長さ
+    private float chargeTimer;           //チャージ時間の計算用
+    private float damageDuration = 0.6f;//ダメージアニメーションの長さ
+    private float damageTimer;          //ダメージ時間の計算用
+    private bool isGround;              //接地しているかどうか
+    private bool isAttack = false;      //攻撃中かどうか
+    private bool isCharging = false;    //チャージ中かどうか
+    private bool isDamage = false;      //ダメージを受けているかどうか
+    private bool isRun = false;         //移動中かどうか
     #endregion
 
     private void Start()
     {
         cameraRot = cam.transform.localRotation;
         characterRot = transform.localRotation;
-
-        rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
         RotateCamera();
         Jump();
+        PlayAnim();
+
+        //デバッグ用
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            TakeDamage();
+        }
     }
 
     private void FixedUpdate()
@@ -56,8 +71,21 @@ public class PlayerController : MonoBehaviour
         playerX = Input.GetAxisRaw("Horizontal");
         playerZ = Input.GetAxisRaw("Vertical");
 
+        //カメラの向きに応じた移動ベクトルを計算
         Vector3 moveDirection = cam.transform.forward * playerZ + cam.transform.right * playerX;
-        moveDirection.y = 0f;   //Y軸の移動は無視する(地面に沿って移動する)
+
+        //Y軸の移動は無視する(地面に沿って移動する)
+        moveDirection.y = 0f;   
+
+        if(moveDirection.magnitude > 0)
+        {
+            isRun = true;
+            transform.forward = moveDirection.normalized;
+        }
+        else
+        {
+            isRun = false;
+        }
 
         rb.MovePosition(transform.position + moveDirection.normalized * moveSpeed * Time.fixedDeltaTime);
     }
@@ -92,7 +120,7 @@ public class PlayerController : MonoBehaviour
     }
     
     /// <summary>
-    /// カメラ角度制限
+    /// カメラの角度制限
     /// </summary>
     /// <param name="q">カメラの角度</param>
     /// <returns>制限後のカメラの角度</returns>
@@ -109,6 +137,89 @@ public class PlayerController : MonoBehaviour
         q.x = Mathf.Tan(angleX * Mathf.Deg2Rad * 0.5f);
 
         return q;
+    }
+
+    /// <summary>
+    /// アニメーションの再生
+    /// </summary>
+    private void PlayAnim()
+    {
+        //攻撃アニメーションの管理
+        if (Input.GetMouseButton(0) && !isAttack && !isCharging)
+        {
+            Attack();
+            isAttack = true;
+            animator.SetTrigger("Attack");
+            attackTimer = 0f;
+        }
+        if(isAttack)
+        {
+            attackTimer += Time.deltaTime;
+
+            if(attackTimer >= attackDuration)
+            {
+                isAttack = false;
+                animator.SetTrigger("Idle");
+            }
+        }
+
+
+        //溜め攻撃アニメーションの管理
+        if(Input.GetMouseButton(1) && !isAttack && !isCharging)
+        {
+            isCharging = true;
+            animator.SetTrigger("Charge");
+            chargeTimer = 0f;
+        }
+        if (isCharging)
+        {
+            chargeTimer += Time.deltaTime;
+
+            //溜め攻撃が完了したら攻撃を実行
+            if(chargeTimer >= chargeDuration)
+            {
+                ExecuteChargeAttack();
+                isCharging = false;
+                animator.SetTrigger("Idle");
+            }
+        }
+
+
+        //被ダメージアニメーションの管理
+        if (isDamage)
+        {
+            damageTimer += Time.deltaTime;
+
+            if(damageTimer >= damageDuration)
+            {
+                isDamage = false;
+                animator.SetTrigger("Idle");
+            }
+        }
+
+        animator.SetBool("isRun", isRun);
+    }
+
+    private void Attack()
+    {
+        Debug.Log("攻撃");
+    }
+
+    private void ExecuteChargeAttack()
+    {
+        Debug.Log("溜め攻撃");
+    }
+
+    private void TakeDamage()
+    {
+        if(!isDamage)
+        {
+            isDamage = true;
+            animator.SetTrigger("Damage");
+            damageTimer = 0f;
+
+            Debug.Log("ダメージ");
+        }
     }
 
     #region 接地判定

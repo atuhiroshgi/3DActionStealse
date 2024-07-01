@@ -144,82 +144,87 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayAnim()
     {
-        //攻撃アニメーションの管理
-        if (Input.GetMouseButton(0) && !isAttack && !isCharging)
+        if(Input.GetMouseButtonDown(0) && !isAttack && !isCharging)
         {
             Attack();
-            isAttack = true;
-            animator.SetTrigger("Attack");
-            attackTimer = 0f;
-        }
-        if(isAttack)
-        {
-            attackTimer += Time.deltaTime;
-
-            if(attackTimer >= attackDuration)
-            {
-                isAttack = false;
-                animator.SetTrigger("Idle");
-            }
         }
 
-
-        //溜め攻撃アニメーションの管理
         if(Input.GetMouseButton(1) && !isAttack && !isCharging)
         {
-            isCharging = true;
-            animator.SetTrigger("Charge");
-            chargeTimer = 0f;
+            ChargeAttack();
         }
-        if (isCharging)
-        {
-            chargeTimer += Time.deltaTime;
-
-            //溜め攻撃が完了したら攻撃を実行
-            if(chargeTimer >= chargeDuration)
-            {
-                ExecuteChargeAttack();
-                isCharging = false;
-                animator.SetTrigger("Idle");
-            }
-        }
-
-
-        //被ダメージアニメーションの管理
         if (isDamage)
         {
-            damageTimer += Time.deltaTime;
-
-            if(damageTimer >= damageDuration)
-            {
-                isDamage = false;
-                animator.SetTrigger("Idle");
-            }
+            TakeDamage();
         }
 
         animator.SetBool("isRun", isRun);
     }
-
+    
+    /// <summary>
+    /// 攻撃の処理
+    /// </summary>
     private void Attack()
     {
+        isAttack = true;
         Debug.Log("攻撃");
+        animator.SetTrigger("Attack");
+        StartCoroutine(ResetBoolAfterDelay("isAttack", attackDuration));
     }
 
-    private void ExecuteChargeAttack()
+    /// <summary>
+    /// 溜め攻撃の処理
+    /// </summary>
+    private void ChargeAttack()
     {
+        isCharging = true;
+        animator.SetTrigger("Charge");
+        StartCoroutine(ResetBoolAfterDelay("isCharging", chargeDuration));
+
         Debug.Log("溜め攻撃");
     }
 
+    /// <summary>
+    /// ダメージを受けたときの処理
+    /// </summary>
     private void TakeDamage()
     {
         if(!isDamage)
         {
             isDamage = true;
             animator.SetTrigger("Damage");
-            damageTimer = 0f;
+            StartCoroutine(ResetBoolAfterDelay("isDamage", damageDuration));
 
             Debug.Log("ダメージ");
         }
+    }
+
+    /// <summary>
+    /// アニメーションの時間待つための関数
+    /// </summary>
+    /// <param name="boolName">アニメーションを管理するbool変数</param>
+    /// <param name="delay">経過させる時間</param>
+    /// <returns></returns>
+    private IEnumerator ResetBoolAfterDelay(string boolName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        switch (boolName)
+        {
+            case "isAttack":
+                isAttack = false;
+                break;
+
+            case "isCharging":
+                isCharging = false;
+                break;
+
+            case "isDamage":
+                isDamage = false;
+                break;
+        }
+
+        animator.SetTrigger("Idle");
     }
 
     #region 接地判定

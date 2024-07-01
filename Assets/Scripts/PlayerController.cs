@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeedIn;             //プレイヤーの移動速度を入力
     [SerializeField] private float maxAngVelo;              //最大の回転角速度
     [SerializeField] private float smoothTime = 0.1f;       //進行方向にかかる時間
-    [SerializeField] private float jumpForce = 6f;          //ジャンプの高さを入力
+    [SerializeField] private float jumpForce;          //ジャンプの高さを入力
     #endregion
 
     #region private変数
@@ -26,11 +27,8 @@ public class PlayerController : MonoBehaviour
     private float diffAngle;            //現在の向きと進行方向の角度
     private float rotAngle;             //現在の回転する角度
     private float attackDuration = 0.8f;//攻撃アニメーションの長さ
-    private float attackTimer;          //攻撃時間の計算用
     private float chargeDuration = 0.6f;//チャージアニメーションの長さ
-    private float chargeTimer;           //チャージ時間の計算用
     private float damageDuration = 0.6f;//ダメージアニメーションの長さ
-    private float damageTimer;          //ダメージ時間の計算用
     private bool isGround;              //接地しているかどうか
     private bool isAttack = false;      //攻撃中かどうか
     private bool isCharging = false;    //チャージ中かどうか
@@ -49,17 +47,12 @@ public class PlayerController : MonoBehaviour
         RotatePlayer();
         Jump();
         PlayAnim();
-
+        MovePlayer();
         //デバッグ用
         if (Input.GetKeyDown(KeyCode.F))
         {
             TakeDamage();
         }
-    }
-
-    private void FixedUpdate()
-    {
-        MovePlayer();
     }
 
     /// <summary>
@@ -72,30 +65,31 @@ public class PlayerController : MonoBehaviour
         //カメラに対して右を取得
         Vector3 cameraRight = Vector3.Scale(Camera.main.transform.right, new Vector3(1, 0, 1)).normalized;
 
-        //moveVelocityを0で初期化する
         moveSpeed = Vector3.zero;
 
         //移動入力
-        if (Input.GetKey(KeyCode.W))
+        Vector3 moveDirection = Vector3.zero;
+        if(Input.GetKey(KeyCode.W))
         {
-            moveSpeed += moveSpeedIn * cameraForward;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            moveSpeed -= moveSpeedIn * cameraRight;
+            moveDirection += cameraForward;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            moveSpeed -= moveSpeedIn * cameraForward;
+            moveDirection -= cameraForward;
+        }
+        if(Input.GetKey(KeyCode.A))
+        {
+            moveDirection -= cameraRight;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            moveSpeed += moveSpeedIn * cameraRight;
+            moveDirection += cameraRight;
         }
 
-        rb.velocity = moveSpeed;
+        //移動方向に速度をかけて移動
+        rb.MovePosition(transform.position + moveDirection.normalized * moveSpeedIn * Time.deltaTime);
 
-        isRun = moveSpeed != Vector3.zero;
+        isRun = moveDirection != Vector3.zero;
     }
 
     /// <summary>
@@ -135,10 +129,10 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Jump()
     {
-        if (isGround && Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && isGround)
         {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
             Debug.Log("ジャンプ");
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 

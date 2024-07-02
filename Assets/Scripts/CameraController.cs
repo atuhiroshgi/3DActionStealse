@@ -5,12 +5,20 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private GameObject player;
-    [SerializeField] private float distanceToPlayer = 10.0f; // プレイヤーとの距離
 
     private float currentX = 0.0f;
     private float currentY = 0.0f;
     private const float Y_ANGLE_MIN = -20.0f;
     private const float Y_ANGLE_MAX = 80.0f;
+
+    private float distanceToPlayer = 7.0f; // プレイヤーとの距離
+
+    private void Start()
+    {
+        // マウスカーソルをロックし、非表示にする
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
     void Update()
     {

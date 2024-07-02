@@ -6,51 +6,34 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private GameObject player;
 
-    private Vector3 currentPos;
-    private Vector3 pastPos;
-    private Vector3 diff;
-    private float distanceToPlayer = 46.25f;
+    private float currentX = 0.0f;
+    private float currentY = 0.0f;
+    private const float Y_ANGLE_MIN = -20.0f;
+    private const float Y_ANGLE_MAX = 80.0f;
+    private float distanceToPlayer = 7.0f; // プレイヤーとの距離
 
     private void Start()
     {
-        pastPos = player.transform.position;
+        // マウスカーソルをロックし、非表示にする
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
     {
-        currentPos = player.transform.position;
-        diff = currentPos - pastPos;
-
-        // カメラ位置の更新
-        transform.position = Vector3.Lerp(transform.position, transform.position + diff, 1.0f);
-
         // マウスの移動量を取得
-        float mx = Input.GetAxis("Mouse X");
-        float my = Input.GetAxis("Mouse Y");
+        currentX += Input.GetAxis("Mouse X");
+        currentY -= Input.GetAxis("Mouse Y");
 
-        // X方向に一定量移動していれば横回転
-        if (Mathf.Abs(mx) > 0.01f)
-        {
-            // 回転軸はワールド座標のY軸
-            transform.RotateAround(player.transform.position, Vector3.up, mx);
-        }
+        // Y方向の回転角度を制限
+        currentY = Mathf.Clamp(currentY, Y_ANGLE_MIN, Y_ANGLE_MAX);
 
-        // Y方向に一定量移動していれば縦回転
-        if (Mathf.Abs(my) > 0.01f)
-        {
-            // 回転軸はカメラ自身のX軸
-            transform.RotateAround(player.transform.position, transform.right, -my);
-        }
+        // プレイヤーの方向を向く
+        Vector3 direction = new Vector3(0, 0, -distanceToPlayer);
+        Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
+        transform.position = player.transform.position + rotation * direction;
 
-        // Playerからの距離を一定にする
-        Vector3 cameraToPlayer = transform.position - player.transform.position;
-        float desiredDistance = Mathf.Sqrt(distanceToPlayer);
-        if (cameraToPlayer.magnitude > desiredDistance)
-        {
-            cameraToPlayer = cameraToPlayer.normalized * desiredDistance;
-            transform.position = player.transform.position + cameraToPlayer;
-        }
-
-        pastPos = currentPos;
+        // プレイヤーの方向を向く
+        transform.LookAt(player.transform.position);
     }
 }

@@ -10,6 +10,7 @@ public class CameraController : MonoBehaviour
     private float currentY = 0.0f;
     private const float Y_ANGLE_MIN = -20.0f;
     private const float Y_ANGLE_MAX = 80.0f;
+
     private float distanceToPlayer = 7.0f; // ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£
 
     private void Start()

@@ -132,6 +132,7 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space) && isGround)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+            isGround = false;
             Debug.Log("ƒWƒƒƒ“ƒv");
         }
     }
@@ -237,11 +238,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if ((groundLayers & (1 << collision.gameObject.layer)) != 0)
-        {
-            Debug.Log("—£—¤");
-            isGround = false;
-        }
+        //if ((groundLayers & (1 << collision.gameObject.layer)) != 0)
+        //{
+          //  Debug.Log("—£—¤");
+            //isGround = false;
+        //}
     }
     #endregion
 }

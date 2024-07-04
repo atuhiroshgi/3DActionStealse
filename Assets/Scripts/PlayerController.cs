@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private bool isCharging = false;    //チャージ中かどうか
     private bool isDamage = false;      //ダメージを受けているかどうか
     private bool isRun = false;         //移動中かどうか
+    private bool isHidden = false;      //透明化中かどうか
     #endregion
 
     private void Start()
@@ -48,11 +49,9 @@ public class PlayerController : MonoBehaviour
         Jump();
         PlayAnim();
         MovePlayer();
+
         //デバッグ用
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            TakeDamage();
-        }
+        ForDebug();
     }
 
     /// <summary>
@@ -238,11 +237,34 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        //if ((groundLayers & (1 << collision.gameObject.layer)) != 0)
-        //{
-          //  Debug.Log("離陸");
+        if ((groundLayers & (1 << collision.gameObject.layer)) != 0)
+        {
+            //Debug.Log("離陸");
             //isGround = false;
-        //}
+        }
     }
     #endregion
+
+    private void ForDebug() {
+        if (isHidden)
+        {
+            moveSpeedIn = 100f;
+            jumpForce = 14f;
+        }
+        else
+        {
+            moveSpeedIn = 50f;
+            jumpForce = 7f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            TakeDamage();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            isHidden = !isHidden;
+        }
+    }
 }

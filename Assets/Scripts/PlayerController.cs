@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class PlayerController : MonoBehaviour
 {
     #region SerializeField
+    [SerializeField] private GameObject SkinObject;         //透明化のときにオブジェクトにアクセスするため
     [SerializeField] private Animator animator;
     [SerializeField] private LayerMask groundLayers;        //地面判定をするためのレイヤー
     [SerializeField] private float moveSpeedIn;             //プレイヤーの移動速度を入力
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour
 
     #region private変数
     private Rigidbody rb;
+    private SkinnedMeshRenderer skinnedMR;  //SkinnedMeshRendererを参照するため
     private Vector3 moveSpeed;          //プレイヤーの移動速度
     private Vector3 currentPos;         //プレイヤーの現在の位置
     private Vector3 pastPos;            //プレイヤーの過去の位置
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        skinnedMR = SkinObject.GetComponent<SkinnedMeshRenderer>();
         pastPos = transform.position;
     }
 
@@ -49,6 +52,7 @@ public class PlayerController : MonoBehaviour
         Jump();
         PlayAnim();
         MovePlayer();
+        Hidden();
 
         //デバッグ用
         ForDebug();
@@ -124,7 +128,21 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// ジャンプするときに呼ぶ関数
+    /// 隠れるモードに関する処理
+    /// </summary>
+    private void Hidden()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            isHidden = !isHidden;
+            skinnedMR.enabled = !isHidden;  //isHiddenに基づいて透明化のオンオフを決定
+            moveSpeedIn = isHidden ? 100f : 50f;
+            jumpForce = isHidden ? 14f : 7f;
+        }
+    }
+
+    /// <summary>
+    /// ジャンプに関する処理
     /// </summary>
     private void Jump()
     {
@@ -164,10 +182,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Attack()
     {
-        isAttack = true;
-        Debug.Log("攻撃");
-        animator.SetTrigger("Attack");
-        StartCoroutine(ResetBoolAfterDelay("isAttack", attackDuration));
+        if (!isHidden)
+        {
+            isAttack = true;
+            Debug.Log("攻撃");
+            animator.SetTrigger("Attack");
+            StartCoroutine(ResetBoolAfterDelay("isAttack", attackDuration));
+        }
     }
 
     /// <summary>
@@ -175,11 +196,14 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ChargeAttack()
     {
-        isCharging = true;
-        animator.SetTrigger("Charge");
-        StartCoroutine(ResetBoolAfterDelay("isCharging", chargeDuration));
+        if (!isHidden)
+        {
+            isCharging = true;
+            animator.SetTrigger("Charge");
+            StartCoroutine(ResetBoolAfterDelay("isCharging", chargeDuration));
 
-        Debug.Log("溜め攻撃");
+            Debug.Log("溜め攻撃");
+        }
     }
 
     /// <summary>
@@ -192,6 +216,15 @@ public class PlayerController : MonoBehaviour
             isDamage = true;
             animator.SetTrigger("Damage");
             StartCoroutine(ResetBoolAfterDelay("isDamage", damageDuration));
+
+            if (isHidden)
+            {
+                //ダメージを受けたら透明化解除
+                isHidden = false;
+                skinnedMR.enabled = true;
+                moveSpeedIn = 50f;
+                jumpForce = 7f; ;
+            }
 
             Debug.Log("ダメージ");
         }
@@ -246,25 +279,10 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     private void ForDebug() {
-        if (isHidden)
-        {
-            moveSpeedIn = 100f;
-            jumpForce = 14f;
-        }
-        else
-        {
-            moveSpeedIn = 50f;
-            jumpForce = 7f;
-        }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             TakeDamage();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            isHidden = !isHidden;
         }
     }
 }

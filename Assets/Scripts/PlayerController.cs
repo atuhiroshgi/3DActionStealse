@@ -9,11 +9,13 @@ public class PlayerController : MonoBehaviour
     #region SerializeField
     [SerializeField] private GameObject SkinObject;         //透明化のときにオブジェクトにアクセスするため
     [SerializeField] private Animator animator;
+    [SerializeField] private Material normalMaterial;       //通常時のマテリアル
+    [SerializeField] private Material hiddenMaterial;       //透明化時のマテリアル
     [SerializeField] private LayerMask groundLayers;        //地面判定をするためのレイヤー
     [SerializeField] private float moveSpeedIn;             //プレイヤーの移動速度を入力
     [SerializeField] private float maxAngVelo;              //最大の回転角速度
     [SerializeField] private float smoothTime = 0.1f;       //進行方向にかかる時間
-    [SerializeField] private float jumpForce;          //ジャンプの高さを入力
+    [SerializeField] private float jumpForce;               //ジャンプの高さを入力
     #endregion
 
     #region private変数
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         skinnedMR = SkinObject.GetComponent<SkinnedMeshRenderer>();
         pastPos = transform.position;
+        skinnedMR.material = normalMaterial;
     }
 
     private void Update()
@@ -135,9 +138,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             isHidden = !isHidden;
-            skinnedMR.enabled = !isHidden;  //isHiddenに基づいて透明化のオンオフを決定
-            moveSpeedIn = isHidden ? 100f : 50f;
-            jumpForce = isHidden ? 14f : 7f;
+            //skinnedMR.enabled = !isHidden;  //isHiddenに基づいて透明化のオンオフを決定
+            skinnedMR.material = isHidden ? hiddenMaterial : normalMaterial;
+            
+            moveSpeedIn = isHidden ? 80f : 50f;
+            jumpForce = isHidden ? 12f : 7f;
         }
     }
 

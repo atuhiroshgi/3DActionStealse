@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Material normalMaterial;       //通常時のマテリアル
     [SerializeField] private Material hiddenMaterial;       //透明化時のマテリアル
+    [SerializeField] private Transform startPos;            //プレイヤーがスポーンする座標
     [SerializeField] private LayerMask groundLayers;        //地面判定をするためのレイヤー
     [SerializeField] private float moveSpeedIn;             //プレイヤーの移動速度を入力
     [SerializeField] private float maxAngVelo;              //最大の回転角速度
@@ -31,7 +32,7 @@ public class PlayerController : MonoBehaviour
     private float diffAngle;            //現在の向きと進行方向の角度
     private float rotAngle;             //現在の回転する角度
     private float attackDuration = 0.8f;//攻撃アニメーションの長さ
-    private float chargeDuration = 0.6f;//チャージアニメーションの長さ
+    private float chargeDuration = 1.6f;//チャージアニメーションの長さ
     private float damageDuration = 0.6f;//ダメージアニメーションの長さ
     private bool isGround;              //接地しているかどうか
     private bool isAttack = false;      //攻撃中かどうか
@@ -46,7 +47,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         skinnedMR = SkinObject.GetComponent<SkinnedMeshRenderer>();
         pastPos = transform.position;
-        skinnedMR.material = normalMaterial;
+
+        Init();
     }
 
     private void Update()
@@ -59,6 +61,23 @@ public class PlayerController : MonoBehaviour
 
         //デバッグ用
         ForDebug();
+    }
+
+    private void Init()
+    {
+        //Playerが湧く位置の初期化
+        if (startPos != null)
+        {
+            transform.position = startPos.position;
+            transform.rotation = startPos.rotation;
+        }
+        else
+        {
+            Debug.LogError("StartPosが設定されていません。");
+        }
+
+        //マテリアルの初期化
+        skinnedMR.material = normalMaterial;
     }
 
     /// <summary>

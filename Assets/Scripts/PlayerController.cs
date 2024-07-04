@@ -7,16 +7,22 @@ using UnityEngine.EventSystems;
 public class PlayerController : MonoBehaviour
 {
     #region SerializeField
+    [Header("3Dモデル")]
     [SerializeField] private GameObject SkinObject;         //透明化のときにオブジェクトにアクセスするため
-    [SerializeField] private Animator animator;
+    [Header("アニメーター")]
+    [SerializeField] private Animator animator;         //アニメーション制御に必要
+    [Header("通常時のマテリアル")]
     [SerializeField] private Material normalMaterial;       //通常時のマテリアル
+    [Header("半透明のマテリアル")]
     [SerializeField] private Material hiddenMaterial;       //透明化時のマテリアル
+    [Header("プレイヤーの初期スポーン")]
     [SerializeField] private Transform startPos;            //プレイヤーがスポーンする座標
+    [Header("地面判定をつけるレイヤー")]
     [SerializeField] private LayerMask groundLayers;        //地面判定をするためのレイヤー
-    [SerializeField] private float moveSpeedIn;             //プレイヤーの移動速度を入力
-    [SerializeField] private float maxAngVelo;              //最大の回転角速度
+    [Header("おばけが進行方向に向く速度")]
     [SerializeField] private float smoothTime = 0.1f;       //進行方向にかかる時間
-    [SerializeField] private float jumpForce;               //ジャンプの高さを入力
+    [Header("ジャンプの高さ")]
+    [SerializeField] private float jumpForce;               //ジャンプするとき上向きにかける力
     #endregion
 
     #region private変数
@@ -31,6 +37,10 @@ public class PlayerController : MonoBehaviour
     private float currentAngVelo;       //現在の回転角速度
     private float diffAngle;            //現在の向きと進行方向の角度
     private float rotAngle;             //現在の回転する角度
+    private float maxAngVelo = float.PositiveInfinity;     //最大の回転角
+    private float moveSpeedIn;          //スピード管理用
+    private float defaultMoveSpeed = 5f;//通常時
+    private float hiddenMoveSpeed = 15f;//隠れ時
     private float attackDuration = 0.8f;//攻撃アニメーションの長さ
     private float chargeDuration = 1.6f;//チャージアニメーションの長さ
     private float damageDuration = 0.6f;//ダメージアニメーションの長さ
@@ -40,6 +50,7 @@ public class PlayerController : MonoBehaviour
     private bool isDamage = false;      //ダメージを受けているかどうか
     private bool isRun = false;         //移動中かどうか
     private bool isHidden = false;      //透明化中かどうか
+    private bool jumpRequested = false; //ジャンプが要求されたかどうか
     #endregion
 
     private void Start()
@@ -56,15 +67,33 @@ public class PlayerController : MonoBehaviour
         RotatePlayer();
         Jump();
         PlayAnim();
-        MovePlayer();
         Hidden();
+
+        //ジャンプ入力の取得
+        if(Input.GetKeyDown(KeyCode.Space)&& isGround)
+        {
+            jumpRequested = true;
+        }
 
         //デバッグ用
         ForDebug();
     }
 
+    private void FixedUpdate()
+    {
+        MovePlayer();
+        if(jumpRequested)
+        {
+            Jump();
+            jumpRequested = false;
+        }
+    }
+
     private void Init()
     {
+        //プレイヤーの速度の初期化
+        moveSpeedIn = defaultMoveSpeed;
+
         //Playerが湧く位置の初期化
         if (startPos != null)
         {
@@ -160,7 +189,7 @@ public class PlayerController : MonoBehaviour
             //skinnedMR.enabled = !isHidden;  //isHiddenに基づいて透明化のオンオフを決定
             skinnedMR.material = isHidden ? hiddenMaterial : normalMaterial;
             
-            moveSpeedIn = isHidden ? 80f : 50f;
+            moveSpeedIn = isHidden ? hiddenMoveSpeed : defaultMoveSpeed;
             jumpForce = isHidden ? 12f : 7f;
         }
     }
@@ -302,11 +331,16 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    /// <summary>
+    /// デバッグ用
+    /// </summary>
     private void ForDebug() {
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             TakeDamage();
         }
+
+        Debug.Log(moveSpeedIn);
     }
 }

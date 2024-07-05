@@ -401,7 +401,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ForDebug() {
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             TakeDamage();
         }

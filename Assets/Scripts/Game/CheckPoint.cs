@@ -10,6 +10,16 @@ public class CheckPoint : MonoBehaviour
     #region SerializeField
     [Header("UIのImageを取得")]
     [SerializeField] private Image checkPointUI;
+    [Header("進捗表示のための円形ゲージ")]
+    [SerializeField] private Image progressCircleUI;
+    [Header("チェックポイントの上の丸いやつ")]
+    [SerializeField] private GameObject sphereObject;
+    [Header("プレイヤー接触時に出す補助UI")]
+    [SerializeField] private GameObject recommendUI;
+    [Header("制覇前のマテリアル")]
+    [SerializeField] private Material beforeMaterial;
+    [Header("制覇後のマテリアル")]
+    [SerializeField] private Material afterMaterial;
     [Header("どのチェックポイントかを識別する番号")]
     [SerializeField] private int checkPointindex;
     [Header("制覇するのにかかる時間")]
@@ -26,10 +36,20 @@ public class CheckPoint : MonoBehaviour
     #endregion
 
     #region private
+    private MeshRenderer meshRenderer;      //丸いやつのMeshRendererを参照するため
     private CheckpointState currentState = CheckpointState.Idle;
-    private float captureProgress = 0f; //チェックポイントの制覇進捗
-    private bool isCaptured = false;    //チェックポイントが制覇されているかどうか
+    private float captureProgress = 0f;     //チェックポイントの制覇進捗
+    private bool isCaptured = false;        //チェックポイントが制覇されているかどうか
+    private bool isPlayerInContact = false; //プレイヤーが接触しているかどうか
     #endregion
+
+    private void Start()
+    {
+        meshRenderer = sphereObject.GetComponent<MeshRenderer>();
+        Init();
+        recommendUI.SetActive(false);                   //初期状態ではおすすめUIを非表示に設定
+        progressCircleUI.gameObject.SetActive(false);   //初期状態では進捗ゲージを非表示に設定
+    }
 
     private void Update()
     {
@@ -46,6 +66,15 @@ public class CheckPoint : MonoBehaviour
                 HandleReleaseProgress();
                 break;
         }
+
+        //進捗ゲージのUI更新
+        UpdateProgressUI();
+    }
+
+    private void Init()
+    {
+        meshRenderer.material = beforeMaterial;
+        progressCircleUI.fillAmount = 0f;
     }
 
     /// <summary>
@@ -92,7 +121,34 @@ public class CheckPoint : MonoBehaviour
     private void CaptureCheckPoint()
     {
         isCaptured = true;
+        
+        //チェックポイントのUIをピンクに更新
         checkPointUI.color = new Color32(242, 108, 216, 255);
+
+        //チェックポイントのマテリアルを黄色に更新
+        meshRenderer.material = afterMaterial;
+
+        //進捗UIを非表示に設定
+        progressCircleUI.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 進捗UIを更新
+    /// </summary>
+    private void UpdateProgressUI()
+    {
+        if (isCaptured)
+        {
+            //制覇済みの場合は進捗UIを非表示にして、UpdateProgressの処理を行わない
+            progressCircleUI.gameObject.SetActive(false);
+            return;
+        }
+
+        if(currentState == CheckpointState.Capturing || currentState == CheckpointState.Releasing)
+        {
+            progressCircleUI.gameObject.SetActive(true);    //進捗中は進捗ゲージを表示
+            progressCircleUI.fillAmount = captureProgress / captureDuration;
+        }
     }
 
     #region 接触判定
@@ -100,6 +156,16 @@ public class CheckPoint : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
+            if(isCaptured)
+            {
+                recommendUI.gameObject.SetActive(false);
+                return;
+            }
+
+            //プレイヤー接触時にUIを表示
+            isPlayerInContact = true;
+            recommendUI.SetActive(true);
+
             if (Input.GetKey(KeyCode.E))
             {
                 currentState = CheckpointState.Capturing;
@@ -116,6 +182,10 @@ public class CheckPoint : MonoBehaviour
         //接触終了時の処理
         if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
+            //プレイヤーが離れたらUIを非表示
+            isPlayerInContact = false;
+            recommendUI.SetActive(false);
+            
             currentState = CheckpointState.Releasing;
         }
     }

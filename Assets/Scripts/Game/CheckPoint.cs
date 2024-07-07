@@ -33,6 +33,9 @@ public class CheckPoint : MonoBehaviour
         Capturing,
         Releasing
     }
+
+    //IsCapturedをisCapturedの読み取り専用プロパティにする
+    public bool IsCaptured => isCaptured;
     #endregion
 
     #region private
@@ -49,6 +52,9 @@ public class CheckPoint : MonoBehaviour
         Init();
         recommendUI.SetActive(false);                   //初期状態ではおすすめUIを非表示に設定
         progressCircleUI.gameObject.SetActive(false);   //初期状態では進捗ゲージを非表示に設定
+
+        //GameManagerにこのチェックポイントを登録
+        GameManager.instance.RegisterCheckPoint(this);
     }
 
     private void Update()
@@ -86,6 +92,7 @@ public class CheckPoint : MonoBehaviour
         if (Input.GetKey(KeyCode.E))
         {
             captureProgress += Time.deltaTime;
+            Debug.Log($"進捗中:{captureProgress / captureDuration * 100}%");
         }
 
         //進捗が制覇時間を超えたら制覇完了
@@ -105,6 +112,7 @@ public class CheckPoint : MonoBehaviour
         if (!Input.GetKey(KeyCode.E))
         {
             captureProgress -= Time.deltaTime;
+            Debug.Log($"リセット中: {captureProgress / captureDuration * 100}%");
         }
 
         //進捗が0以下になったらリセット完了
@@ -130,6 +138,9 @@ public class CheckPoint : MonoBehaviour
 
         //進捗UIを非表示に設定
         progressCircleUI.gameObject.SetActive(false);
+
+        //GameManagerにチェックポイントが制覇されたことを通知
+        GameManager.instance.CheckAllCheckPointsCaptured();
     }
 
     /// <summary>
@@ -139,14 +150,12 @@ public class CheckPoint : MonoBehaviour
     {
         if (isCaptured)
         {
-            //制覇済みの場合は進捗UIを非表示にして、UpdateProgressの処理を行わない
-            progressCircleUI.gameObject.SetActive(false);
             return;
         }
 
         if(currentState == CheckpointState.Capturing || currentState == CheckpointState.Releasing)
         {
-            progressCircleUI.gameObject.SetActive(true);    //進捗中は進捗ゲージを表示
+            progressCircleUI.gameObject.SetActive(true);
             progressCircleUI.fillAmount = captureProgress / captureDuration;
         }
     }
@@ -185,7 +194,7 @@ public class CheckPoint : MonoBehaviour
             //プレイヤーが離れたらUIを非表示
             isPlayerInContact = false;
             recommendUI.SetActive(false);
-            
+
             currentState = CheckpointState.Releasing;
         }
     }

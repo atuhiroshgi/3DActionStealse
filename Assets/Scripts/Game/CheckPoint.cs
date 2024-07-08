@@ -12,6 +12,10 @@ public class CheckPoint : MonoBehaviour
     [SerializeField] private Image checkPointUI;
     [Header("進捗表示のための円形ゲージ")]
     [SerializeField] private Image progressCircleUI;
+    [Header("制覇前にUIに表示するアイコン画像")]
+    [SerializeField] private Sprite defaultIcon;
+    [Header("制覇後にUIに表示するアイコン画像")]
+    [SerializeField] private Sprite captureIcon;
     [Header("チェックポイントの上の丸いやつ")]
     [SerializeField] private GameObject sphereObject;
     [Header("プレイヤー接触時に出す補助UI")]
@@ -50,8 +54,13 @@ public class CheckPoint : MonoBehaviour
     {
         meshRenderer = sphereObject.GetComponent<MeshRenderer>();
         Init();
-        recommendUI.SetActive(false);                   //初期状態ではおすすめUIを非表示に設定
-        progressCircleUI.gameObject.SetActive(false);   //初期状態では進捗ゲージを非表示に設定
+
+        //初期状態ではおすすめUIを非表示に設定
+        recommendUI.SetActive(false);
+        //初期状態では進捗ゲージを非表示に設定
+        progressCircleUI.gameObject.SetActive(false);
+
+        checkPointUI.sprite = defaultIcon;
 
         //GameManagerにこのチェックポイントを登録
         GameManager.instance.RegisterCheckPoint(this);
@@ -131,13 +140,15 @@ public class CheckPoint : MonoBehaviour
         isCaptured = true;
         
         //チェックポイントのUIをピンクに更新
-        checkPointUI.color = new Color32(242, 108, 216, 255);
+        //checkPointUI.color = new Color32(242, 108, 216, 255);
 
         //チェックポイントのマテリアルを黄色に更新
         meshRenderer.material = afterMaterial;
 
         //進捗UIを非表示に設定
         progressCircleUI.gameObject.SetActive(false);
+
+        checkPointUI.sprite = captureIcon;
 
         //GameManagerにチェックポイントが制覇されたことを通知
         GameManager.instance.CheckAllCheckPointsCaptured();

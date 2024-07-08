@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class TitleAnimation : MonoBehaviour
 {
+    [SerializeField] private SkinnedMeshRenderer skinnedMR;
+    
     private Animator animator;
     private int animateTime = 6;
     private float timer;
@@ -17,10 +19,18 @@ public class TitleAnimation : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         timer = animateTime;
+        skinnedMR.enabled = true;
     }
 
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            isAnimating = true;
+            animateTime = -1;
+            animator.SetBool("Dissolved", true);
+        }
+
         timer += Time.deltaTime;
 
         if(timer >= 1f)
@@ -45,6 +55,9 @@ public class TitleAnimation : MonoBehaviour
         animator.SetBool("Surprised", isSurprised);
     }
 
+    /// <summary>
+    /// ランダムにアニメーションを再生する処理
+    /// </summary>
     private void PlayRandomAnimation()
     {
         int randomIndex = Random.Range(0, 2);
@@ -59,9 +72,24 @@ public class TitleAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// アニメーションをIdleに戻す処理
+    /// </summary>
     public void CancelAnimation()
     {
         isAttacking = false;
         isSurprised = false;
     }
+    private IEnumerator ChangeSceneAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        GameManager.Instance.ToGameScene();
+    }
+
+    public void Hidden()
+    {
+        skinnedMR.enabled = false;
+        StartCoroutine(ChangeSceneAfterDelay(0f));
+    }
+
 }

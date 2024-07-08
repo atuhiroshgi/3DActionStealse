@@ -8,47 +8,75 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    private List<CheckPoint> checkPoints = new List<CheckPoint>();
-
-    private void Awake()
+    //GameManagerのインスタンスを取得するためのプロパティ
+    public static GameManager Instance
     {
-        //シングルトンパターンの実装
-        if(instance == null)
+        get
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
+            if (instance == null)
+            {
+                // GameManagerがアタッチされているGameObjectを作成し、それにGameManagerコンポーネントをアタッチする
+                GameObject go = new GameObject("GameManager");
+                instance = go.AddComponent<GameManager>();
+                DontDestroyOnLoad(go); // シーン切替時に破棄されないように設定
+            }
+            return instance;
         }
     }
 
+    private void Awake()
+    {
+        // 既にインスタンスが存在する場合は、自身を破棄する
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    #region タイトルシーン
+    public void ToGameScene()
+    {
+        SceneManager.LoadScene("Game");
+    }
+    #endregion
+
+    #region メインシーン
+    private List<CheckPoint> checkPoints = new List<CheckPoint>();
+
     /// <summary>
-    /// チェックポイントを呼ぶときの処理
+    /// チェックポイントを登録する
     /// </summary>
-    /// <param name="checkPoint">チェックポイントのインスタンス</param>
     public void RegisterCheckPoint(CheckPoint checkPoint)
     {
-        if(!checkPoints.Contains(checkPoint))
+        if (!checkPoints.Contains(checkPoint))
         {
             checkPoints.Add(checkPoint);
         }
     }
 
     /// <summary>
-    /// 全てのチェックポイントが制覇されたかどうかを確認する
+    /// 全てのチェックポイントが制覇されたか確認する
     /// </summary>
     public void CheckAllCheckPointsCaptured()
     {
-        //checkPointsリストに入っているチェックポイント全
-        foreach(CheckPoint checkPoint in checkPoints)
+        bool allCaptured = true;
+        foreach (CheckPoint checkPoint in checkPoints)
         {
-            if(!checkPoint.IsCaptured)
+            if (!checkPoint.IsCaptured)
             {
-                return;
+                allCaptured = false;
+                break;
             }
         }
-        Debug.Log("クリア");
+
+        if (allCaptured)
+        {
+            SceneManager.LoadScene("Result");
+        }
     }
+    #endregion
 }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 845f11d7fc3686540becf4d7c85ed5ab
+guid: f87436a6443ef3b49bc99da5507a036a
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -70,7 +70,7 @@ TextureImporter:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
-    resizeAlgorithm: 0
+    resizeAlgorithm: 1
     textureFormat: 4
     textureCompression: 1
     compressionQuality: 50
@@ -95,13 +95,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "icons8-\u91CD\u529B\u306E\u4E2D\u5FC3-100_0"
+      name: crosshair062_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 100
-        height: 100
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -109,8 +109,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 80a0babfd2761ac478096a2a57e69c5f
-      internalID: -188239429
+      spriteID: b7d78aa91f5d3884c890d0121e5862c5
+      internalID: 1498733011
       vertices: []
       indices: 
       edges: []
@@ -118,7 +118,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 160ffdc14ef3b3145993ad54db18e2c0
+    spriteID: 4872110dfe2d8354dbb71f52dcf4ae96
     internalID: 0
     vertices: []
     indices: 
@@ -126,7 +126,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "icons8-\u91CD\u529B\u306E\u4E2D\u5FC3-100_0": -188239429
+      crosshair062_0: 1498733011
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

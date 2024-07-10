@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,6 +19,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Material hiddenMaterial;
     [Header("プレイヤーの初期スポーン")]
     [SerializeField] private Transform startPos;
+    [Header("照準のUI")]
+    [SerializeField] private Image crosshair;
+    [Header("通常時のクロスヘア")]
+    [SerializeField] private Sprite defaultCrosshairImage;
+    [Header("照準があっているときのクロスヘア")]
+    [SerializeField] private Sprite lockOnCrosshairImage;
     [Header("スキルゲージの管理")]
     [SerializeField] private SkillGuageController skillGuageController;
     [Header("地面判定をつけるレイヤー")]
@@ -57,6 +65,7 @@ public class PlayerController : MonoBehaviour
     private bool isDamage = false;      //ダメージを受けているかどうか
     private bool isRun = false;         //移動中かどうか
     private bool isHidden = false;      //透明化中かどうか
+    private bool onceAttack = false;    //一度だけ攻撃判定を出すため
     private bool jumpRequested = false; //ジャンプが要求されたかどうか
     #endregion
 
@@ -73,15 +82,38 @@ public class PlayerController : MonoBehaviour
     {
         RotatePlayer();
         Jump();
-        PlayAnim();
         Hidden();
         Raycast();
+        
+        //攻撃の処理
+        if (Input.GetMouseButtonDown(0) && !isAttack && !isCharging)
+        {
+            Attack();
+        }
+        if (Input.GetMouseButton(1) && !isAttack && !isCharging)
+        {
+            ChargeAttack();
+        }
+        
+        //ダメージをもらった時の処理
+        if (isDamage)
+        {
+            TakeDamage();
+        }
 
         //ジャンプ入力の取得
         if(Input.GetKeyDown(KeyCode.Space)&& isGround)
         {
             jumpRequested = true;
         }
+
+        //攻撃を1回で済ませる処理をリセット
+        if (!isAttack)
+        {
+            onceAttack = false;
+        }
+
+        animator.SetBool("isRun", isRun);
 
         //デバッグ用
         ForDebug();
@@ -115,6 +147,9 @@ public class PlayerController : MonoBehaviour
 
         //マテリアルの初期化
         skinnedMR.material = normalMaterial;
+
+        //クロスヘアの初期化
+        crosshair.sprite = defaultCrosshairImage;
     }
 
     /// <summary>
@@ -268,29 +303,6 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// アニメーションの再生
-    /// </summary>
-    private void PlayAnim()
-    {
-        if (Input.GetMouseButtonDown(0) && !isAttack && !isCharging)
-        {
-            Attack();
-        }
-
-        if (Input.GetMouseButton(1) && !isAttack && !isCharging)
-        {
-            ChargeAttack();
-        }
-
-        if (isDamage)
-        {
-            TakeDamage();
-        }
-
-        animator.SetBool("isRun", isRun);
-    }
-
-    /// <summary>
     /// Rayを飛ばすときの処理
     /// </summary>
     private void Raycast()
@@ -310,12 +322,20 @@ public class PlayerController : MonoBehaviour
             // 最も近いオブジェクトを取得
             GameObject closestHitObject = hits[0].collider.gameObject;
 
-            // 最も近いオブジェクトの名前をコンソールに表示
-            Debug.Log("Closest hit object: " + closestHitObject.name);
-        }
-        else
-        {
-            Debug.Log("No objects hit by the ray.");
+            if(closestHitObject.name == "1stHeightBuilding")
+            {
+                crosshair.sprite = lockOnCrosshairImage;
+                
+                if (isAttack　&& !onceAttack)
+                {
+                    onceAttack = true;
+                    Debug.Log("ダメージ");
+                }
+            }
+            else
+            {
+                crosshair.sprite = defaultCrosshairImage;
+            }
         }
     }
 

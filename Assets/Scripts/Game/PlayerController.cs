@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour
         Jump();
         PlayAnim();
         Hidden();
+        Raycast();
 
         //ジャンプ入力の取得
         if(Input.GetKeyDown(KeyCode.Space)&& isGround)
@@ -290,6 +291,35 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Rayを飛ばすときの処理
+    /// </summary>
+    private void Raycast()
+    {
+        // カメラから20ユニット奥にプレイヤーが配置されていると仮定
+        Vector3 playerPosition = Camera.main.transform.position + Camera.main.transform.forward * 20f;
+        Ray ray = new Ray(playerPosition, Camera.main.transform.forward);
+
+        // Rayがヒットしたすべてのオブジェクトを取得
+        RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity);
+
+        if (hits.Length > 0)
+        {
+            // ヒットしたオブジェクトを距離順にソート
+            System.Array.Sort(hits, (hit1, hit2) => hit1.distance.CompareTo(hit2.distance));
+
+            // 最も近いオブジェクトを取得
+            GameObject closestHitObject = hits[0].collider.gameObject;
+
+            // 最も近いオブジェクトの名前をコンソールに表示
+            Debug.Log("Closest hit object: " + closestHitObject.name);
+        }
+        else
+        {
+            Debug.Log("No objects hit by the ray.");
+        }
+    }
+
+    /// <summary>
     /// 攻撃の処理
     /// </summary>
     private void Attack()
@@ -399,8 +429,8 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// デバッグ用
     /// </summary>
-    private void ForDebug() {
-
+    private void ForDebug() 
+    {
         if (Input.GetKeyDown(KeyCode.R))
         {
             TakeDamage();

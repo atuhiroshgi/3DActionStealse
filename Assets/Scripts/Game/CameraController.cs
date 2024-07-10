@@ -11,6 +11,7 @@ public class CameraController : MonoBehaviour
     private const float Y_ANGLE_MIN = -20.0f;
     private const float Y_ANGLE_MAX = 80.0f;
 
+    private Vector3 cameraOffset = new Vector3(0, 2, 0);
     private float distanceToPlayer = 7.0f; // プレイヤーとの距離
 
     private void Start()
@@ -35,6 +36,6 @@ public class CameraController : MonoBehaviour
         transform.position = player.transform.position + rotation * direction;
 
         // プレイヤーの方向を向く
-        transform.LookAt(player.transform.position);
+        transform.LookAt(player.transform.position + cameraOffset);
     }
 }

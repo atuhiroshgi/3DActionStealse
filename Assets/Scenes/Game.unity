@@ -12495,13 +12495,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1279454174}
-  m_LocalRotation: {x: 0, y: 0, z: 0.38268343, w: 0.92387956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1081663608}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 50}
@@ -21837,6 +21837,7 @@ MonoBehaviour:
   crosshair: {fileID: 1279454176}
   defaultCrosshairImage: {fileID: 724417697, guid: 9e09c55e609e5af4ab0c289422bb4e90, type: 3}
   lockOnCrosshairImage: {fileID: 1498733011, guid: f87436a6443ef3b49bc99da5507a036a, type: 3}
+  longLockOnCrosshairImage: {fileID: 1328683935, guid: 7f879efeceddddb49b105ea8684b6ad8, type: 3}
   skillGuageController: {fileID: 1553380644}
   groundLayers:
     serializedVersion: 2
@@ -21844,6 +21845,8 @@ MonoBehaviour:
   smoothTime: 0.01
   jumpForce: 7
   hideDuration: 5
+  attackRange: 40
+  chargeAttackRange: 80
 --- !u!137 &4301727593808256753
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0

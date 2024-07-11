@@ -23,8 +23,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Image crosshair;
     [Header("通常時のクロスヘア")]
     [SerializeField] private Sprite defaultCrosshairImage;
-    [Header("照準があっているときのクロスヘア")]
+    [Header("通常攻撃の照準があっているときのクロスヘア")]
     [SerializeField] private Sprite lockOnCrosshairImage;
+    [Header("溜め攻撃の照準があっているときのクロスヘア")]
+    [SerializeField] private Sprite longLockOnCrosshairImage;
     [Header("スキルゲージの管理")]
     [SerializeField] private SkillGuageController skillGuageController;
     [Header("地面判定をつけるレイヤー")]
@@ -35,11 +37,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce;
     [Header("透明化を維持できる時間")]
     [SerializeField] private float hideDuration = 3f;
+    [Header("攻撃の射程")]
+    [SerializeField] private float attackRange;
+    [Header("溜め攻撃の射程")]
+    [SerializeField] private float chargeAttackRange;
+
     #endregion
 
     #region private変数
     private Rigidbody rb;
     private SkinnedMeshRenderer skinnedMR;  //SkinnedMeshRendererを参照するため
+    private GameObject closestHitObject;    //最も近いオブジェクトを参照する
     private Vector3 moveSpeed;          //プレイヤーの移動速度
     private Vector3 currentPos;         //プレイヤーの現在の位置
     private Vector3 pastPos;            //プレイヤーの過去の位置
@@ -65,8 +73,11 @@ public class PlayerController : MonoBehaviour
     private bool isDamage = false;      //ダメージを受けているかどうか
     private bool isRun = false;         //移動中かどうか
     private bool isHidden = false;      //透明化中かどうか
+    private bool isNormalFound = false; //通常攻撃の範囲に敵がいるかどうか
+    private bool isChargeFound = false; //溜め攻撃の範囲に敵がいるかどうか
     private bool onceAttack = false;    //一度だけ攻撃判定を出すため
     private bool jumpRequested = false; //ジャンプが要求されたかどうか
+    private string enemyName = "1stHeightBuilding";
     #endregion
 
     private void Start()
@@ -108,7 +119,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //攻撃を1回で済ませる処理をリセット
-        if (!isAttack)
+        if (!isAttack && !isCharging)
         {
             onceAttack = false;
         }
@@ -311,31 +322,63 @@ public class PlayerController : MonoBehaviour
         Vector3 playerPosition = Camera.main.transform.position + Camera.main.transform.forward * 20f;
         Ray ray = new Ray(playerPosition, Camera.main.transform.forward);
 
-        // Rayがヒットしたすべてのオブジェクトを取得
+        //Rayに当たったオブジェクトを配列に格納
         RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity);
+
+        isNormalFound = false;
+        isChargeFound = false;
 
         if (hits.Length > 0)
         {
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider.gameObject.name == enemyName)
+                {
+                    isChargeFound = true;
+
+                    if (isCharging && !onceAttack)
+                    {
+                        onceAttack = true;
+                        Debug.Log("溜め攻撃:ダメージ");
+                        break;
+                    }
+                }
+            }
+
             // ヒットしたオブジェクトを距離順にソート
             System.Array.Sort(hits, (hit1, hit2) => hit1.distance.CompareTo(hit2.distance));
 
             // 最も近いオブジェクトを取得
             GameObject closestHitObject = hits[0].collider.gameObject;
 
-            if(closestHitObject.name == "1stHeightBuilding")
+            if (closestHitObject.name == enemyName && hits[0].distance < attackRange)
             {
-                crosshair.sprite = lockOnCrosshairImage;
-                
-                if (isAttack　&& !onceAttack)
+                isNormalFound = true;
+
+                if (isAttack && !onceAttack)
                 {
                     onceAttack = true;
-                    Debug.Log("ダメージ");
+                    Debug.Log("通常:ダメージ");
                 }
             }
-            else
-            {
-                crosshair.sprite = defaultCrosshairImage;
-            }
+        }
+
+        // 照準の設定
+        if (isNormalFound && isChargeFound)
+        {
+            crosshair.sprite = lockOnCrosshairImage;
+        }
+        else if (isChargeFound)
+        {
+            crosshair.sprite = longLockOnCrosshairImage;
+        }
+        else if (isNormalFound)
+        {
+            crosshair.sprite = lockOnCrosshairImage;
+        }
+        else
+        {
+            crosshair.sprite = defaultCrosshairImage;
         }
     }
 

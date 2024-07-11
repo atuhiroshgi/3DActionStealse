@@ -275,7 +275,7 @@ public class PlayerController : MonoBehaviour
         //半透明のマテリアルに変更
         skinnedMR.material = hiddenMaterial;
         moveSpeedIn = hiddenMoveSpeed;
-        jumpForce = 12f;
+        jumpForce = hiddenJumpForce;
 
         currentHideTime = 0;
 
@@ -297,7 +297,7 @@ public class PlayerController : MonoBehaviour
         isHidden = false;
         skinnedMR.material = normalMaterial;
         moveSpeedIn = defaultMoveSpeed;
-        jumpForce = 7f;
+        jumpForce = defaultJumpForce;
     }
 
     /// <summary>
@@ -362,7 +362,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
+         
         // 照準の設定
         if (isNormalFound && isChargeFound)
         {
@@ -434,7 +434,7 @@ public class PlayerController : MonoBehaviour
                 isHidden = false;
                 skinnedMR.enabled = true;
                 moveSpeedIn = 50f;
-                jumpForce = 7f; ;
+                jumpForce = defaultJumpForce;
             }
 
             Debug.Log("ダメージ");

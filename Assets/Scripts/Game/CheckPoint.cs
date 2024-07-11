@@ -47,7 +47,6 @@ public class CheckPoint : MonoBehaviour
     private CheckpointState currentState = CheckpointState.Idle;
     private float captureProgress = 0f;     //チェックポイントの制覇進捗
     private bool isCaptured = false;        //チェックポイントが制覇されているかどうか
-    private bool isPlayerInContact = false; //プレイヤーが接触しているかどうか
     #endregion
 
     private void Start()
@@ -138,9 +137,6 @@ public class CheckPoint : MonoBehaviour
     private void CaptureCheckPoint()
     {
         isCaptured = true;
-        
-        //チェックポイントのUIをピンクに更新
-        //checkPointUI.color = new Color32(242, 108, 216, 255);
 
         //チェックポイントのマテリアルを黄色に更新
         meshRenderer.material = afterMaterial;
@@ -183,7 +179,6 @@ public class CheckPoint : MonoBehaviour
             }
 
             //プレイヤー接触時にUIを表示
-            isPlayerInContact = true;
             recommendUI.SetActive(true);
 
             if (Input.GetKey(KeyCode.E))
@@ -202,8 +197,6 @@ public class CheckPoint : MonoBehaviour
         //接触終了時の処理
         if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            //プレイヤーが離れたらUIを非表示
-            isPlayerInContact = false;
             recommendUI.SetActive(false);
 
             currentState = CheckpointState.Releasing;

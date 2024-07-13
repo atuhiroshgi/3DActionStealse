@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
 
     #region メインシーン
     private List<CheckPoint> checkPoints = new List<CheckPoint>();
+    private float AlertLevel = 0;
 
     /// <summary>
     /// チェックポイントを登録する
@@ -77,6 +78,12 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene("Result");
         }
+    }
+
+    public void IncreaseAlertLevel(float amount)
+    {
+        AlertLevel += amount;
+        Debug.Log($"警戒度:{AlertLevel}");
     }
     #endregion
 }

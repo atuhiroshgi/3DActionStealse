@@ -6,13 +6,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Character
 {
     #region SerializeField
-    [Header("3Dモデル")]
-    [SerializeField] private GameObject SkinObject;
-    [Header("アニメーター")]
-    [SerializeField] private Animator animator;
     [Header("通常時のマテリアル")]
     [SerializeField] private Material normalMaterial;
     [Header("半透明のマテリアル")]
@@ -45,8 +41,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region private変数
-    private Rigidbody rb;
-    private SkinnedMeshRenderer skinnedMR;  //SkinnedMeshRendererを参照するため
     private GameObject closestHitObject;    //最も近いオブジェクトを参照する
     private Vector3 moveSpeed;          //プレイヤーの移動速度
     private Vector3 currentPos;         //プレイヤーの現在の位置
@@ -59,7 +53,7 @@ public class PlayerController : MonoBehaviour
     private float rotAngle;             //現在の回転する角度
     private float maxAngVelo = float.PositiveInfinity;     //最大の回転角
     private float moveSpeedIn;          //スピード管理用
-    private float defaultMoveSpeed = 5f;//通常時の移動速度
+    private float defaultMoveSpeed = 8f;//通常時の移動速度
     private float hiddenMoveSpeed = 15f;//隠れ時の移動速度
     private float defaultJumpForce = 7f;//通常時のジャンプする力
     private float hiddenJumpForce = 12f;//隠れ時のジャンプする力
@@ -70,22 +64,19 @@ public class PlayerController : MonoBehaviour
     private bool isGround;              //接地しているかどうか
     private bool isAttack = false;      //攻撃中かどうか
     private bool isCharging = false;    //チャージ中かどうか
-    private bool isDamage = false;      //ダメージを受けているかどうか
     private bool isRun = false;         //移動中かどうか
     private bool isHidden = false;      //透明化中かどうか
     private bool isNormalFound = false; //通常攻撃の範囲に敵がいるかどうか
     private bool isChargeFound = false; //溜め攻撃の範囲に敵がいるかどうか
     private bool onceAttack = false;    //一度だけ攻撃判定を出すため
     private bool jumpRequested = false; //ジャンプが要求されたかどうか
-    private string enemyName = "1stHeightBuilding";
     #endregion
 
-    private void Start()
+    protected override void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        skinnedMR = SkinObject.GetComponent<SkinnedMeshRenderer>();
-        pastPos = transform.position;
+        base.Start();
 
+        pastPos = transform.position;
         Init();
     }
 
@@ -104,12 +95,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButton(1) && !isAttack && !isCharging)
         {
             ChargeAttack();
-        }
-        
-        //ダメージをもらった時の処理
-        if (isDamage)
-        {
-            TakeDamage();
         }
 
         //ジャンプ入力の取得
@@ -140,7 +125,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Init()
+    protected override void Init()
     {
         //プレイヤーの速度の初期化
         moveSpeedIn = defaultMoveSpeed;
@@ -162,7 +147,7 @@ public class PlayerController : MonoBehaviour
         //クロスヘアの初期化
         crosshair.sprite = defaultCrosshairImage;
     }
-
+     
     /// <summary>
     /// プレイヤーの動きを制限
     /// </summary>
@@ -319,7 +304,7 @@ public class PlayerController : MonoBehaviour
     private void Raycast()
     {
         // カメラから20ユニット奥にプレイヤーが配置されていると仮定
-        Vector3 playerPosition = Camera.main.transform.position + Camera.main.transform.forward * 20f;
+        Vector3 playerPosition = Camera.main.transform.position + Camera.main.transform.forward * 11f;
         Ray ray = new Ray(playerPosition, Camera.main.transform.forward);
 
         //Rayに当たったオブジェクトを配列に格納
@@ -332,7 +317,7 @@ public class PlayerController : MonoBehaviour
         {
             foreach (RaycastHit hit in hits)
             {
-                if (hit.collider.gameObject.name == enemyName)
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 {
                     isChargeFound = true;
 
@@ -351,7 +336,7 @@ public class PlayerController : MonoBehaviour
             // 最も近いオブジェクトを取得
             GameObject closestHitObject = hits[0].collider.gameObject;
 
-            if (closestHitObject.name == enemyName && hits[0].distance < attackRange)
+            if (closestHitObject.layer == LayerMask.NameToLayer("Enemy") && hits[0].distance < attackRange)
             {
                 isNormalFound = true;
 
@@ -406,7 +391,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isHidden)
         {
-            if (skillGuageController.DecreasedStackCount(1))
+            if (skillGuageController.DecreasedStackCount(4))
             {
                 isCharging = true;
                 animator.SetTrigger("Charge");
@@ -420,26 +405,23 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// ダメージを受けたときの処理
     /// </summary>
-    private void TakeDamage()
+    public override void TakeDamage(int damage)
     {
-        if (!isDamage)
+        base.TakeDamage(damage);
+ 
+        StartCoroutine(ResetBoolAfterDelay("isDamage", damageDuration));
+
+        if (isHidden)
         {
-            isDamage = true;
-            animator.SetTrigger("Damage");
-            StartCoroutine(ResetBoolAfterDelay("isDamage", damageDuration));
-
-            if (isHidden)
-            {
-                //ダメージを受けたら透明化解除
-                isHidden = false;
-                skinnedMR.enabled = true;
-                moveSpeedIn = 50f;
-                jumpForce = defaultJumpForce;
-            }
-
-            Debug.Log("ダメージ");
+            //ダメージを受けたら透明化解除
+            isHidden = false;
+            skinnedMR.enabled = true;
+            moveSpeedIn = 50f;
+            jumpForce = defaultJumpForce;
         }
-    }
+
+        Debug.Log("ダメージ");
+}
 
     /// <summary>
     /// アニメーションの時間待つための関数
@@ -478,15 +460,6 @@ public class PlayerController : MonoBehaviour
             isGround = true;
         }
     }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if ((groundLayers & (1 << collision.gameObject.layer)) != 0)
-        {
-            //Debug.Log("離陸");
-            //isGround = false;
-        }
-    }
     #endregion
 
     /// <summary>
@@ -496,7 +469,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            TakeDamage();
+            TakeDamage(0);
         }
     }
 }

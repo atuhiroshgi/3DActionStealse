@@ -61,7 +61,7 @@ public abstract class Character : MonoBehaviour
 
     protected void Move(Vector3 direction, float speed)
     {
-        rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
+        transform.position += direction * speed * Time.deltaTime;
     }
 
     protected void Rotate(Vector3 targetDirection, float smoothTime, ref float currentAngVelo, float maxAngVelo)

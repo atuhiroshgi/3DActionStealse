@@ -22,7 +22,7 @@ public class EnemyController : Character
     [Header("‹”FŠp“x")]
     [SerializeField] private float sightAngle = 45f;
     [Header("Œx‰ú“x‘‰Á—Ê")]
-    [SerializeField] private float alertIncreaseAmount = 1;
+    [SerializeField] private float alertIncreaseAmount;
     #endregion
 
     #region private

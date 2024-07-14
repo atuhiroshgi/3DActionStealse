@@ -162,7 +162,7 @@ public class EnemyController : Character
         yield return new WaitForSeconds(0.8f);
 
         animator.SetTrigger("Down");
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(8f);
         
         animator.SetTrigger("WakeUp");
         yield return new WaitForSeconds(0.8f);

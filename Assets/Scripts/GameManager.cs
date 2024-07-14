@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
 
         if (allCaptured)
         {
-            SceneManager.LoadScene("Result");
+            ToClearScene();
         }
     }
 
@@ -84,6 +84,21 @@ public class GameManager : MonoBehaviour
     {
         AlertLevel += amount;
         //Debug.Log($"Œx‰ú“x:{AlertLevel}");
+    }
+
+    public float GetAlertLevel()
+    {
+        return AlertLevel;
+    }
+
+    public void ToClearScene()
+    {
+        SceneManager.LoadScene("Clear");
+    }
+
+    public void ToFailedScene()
+    {
+        SceneManager.LoadScene("Failed");
     }
     #endregion
 }

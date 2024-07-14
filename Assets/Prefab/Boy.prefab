@@ -770,7 +770,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2322379553609863725}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: e04bf3a02588719499790d16a988bf51, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -825,22 +825,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4718630b0cc77f468024a1d3f16bcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SkinObject: {fileID: 7372973041451062634}
+  SkinObject: {fileID: 0}
   animator: {fileID: 7092437385231715043}
   maxHP: 100
-  patrolPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  patrolPoints: []
   player: {fileID: 0}
   patrolSpeed: 3
-  waitTimeAtPoint: 2
+  waitTimeAtPoint: 0
   rotationSmoothTime: 0.1
   maxRotationSpeed: 360
-  sightRange: 50
-  sightAngle: 90
-  alertIncreaseAmount: 0.1
+  sightRange: 20
+  sightAngle: 60
+  alertIncreaseAmount: 0.029
 --- !u!1 &2337571519482326059
 GameObject:
   m_ObjectHideFlags: 0

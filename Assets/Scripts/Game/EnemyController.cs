@@ -27,21 +27,33 @@ public class EnemyController : Character
 
     #region private
     private int currentPatrolIndex;
-    private bool isWaiting;
     private float waitTimer;
     private float currentAngularVelocity;
+    private bool isWaiting;
+    private bool playerInSight;
     #endregion
 
     protected override void Init()
     {
         currentPatrolIndex = 0;
-        isWaiting = false;
         waitTimer = 0f;
         currentAngularVelocity = 0f;
+        isWaiting = false;
+        playerInSight = false;
     }
 
     private void Update()
     {
+        CheckPlayerInSight();
+
+        animator.SetBool("isMoving", !isWaiting);
+
+        //プレイヤーが視界に入っているときパトロールしない
+        if(playerInSight || isDead)
+        {
+            return;
+        }
+
         if (!isWaiting)
         {
             Patrol();
@@ -58,8 +70,10 @@ public class EnemyController : Character
             }
         }
 
-        animator.SetBool("isMoving", !isWaiting);
-        CheckPlayerInSight();
+        if(player.isCharging && !player.onceAttack && player.isChargeFound)
+        {
+            TakeDamage(50);
+        }
     }
 
     private void Patrol()
@@ -86,7 +100,9 @@ public class EnemyController : Character
     private void CheckPlayerInSight()
     {
         if (player == null)
+        {
             return;
+        }
 
         Vector3 directionToPlayer = (player.transform.position - transform.position).normalized;
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
@@ -99,12 +115,65 @@ public class EnemyController : Character
             {
                 if (hit.transform.GetComponent<PlayerController>() && !player.isHidden)
                 {
+                    isWaiting = true;
+                    playerInSight = true;
+
+                    if(isDead)
+                    {
+                        return;
+                    }
+
                     float adjustedIncrease = 0;
                     adjustedIncrease += alertIncreaseAmount;
                     GameManager.Instance.IncreaseAlertLevel(adjustedIncrease);
-                    Debug.Log("プレイヤーを発見！ 警戒度が増加しました。");
+                    //Debug.Log("プレイヤーを発見！ 警戒度が増加しました。");
+
+                    if (player.isAttack && !player.onceAttack)
+                    {
+                        TakeDamage(50);
+                    }
                 }
             }
         }
+        else
+        {
+            playerInSight = false;
+        }
+    }
+
+    public override void TakeDamage(int damage)
+    {
+        base.TakeDamage(damage);
+        if(currentHP > 0)
+        {
+            animator.SetTrigger("Damage");
+        }
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+        StartCoroutine(PlayDownAndWakeUpAnimation());
+    }
+
+    private IEnumerator PlayDownAndWakeUpAnimation()
+    {
+        animator.SetTrigger("DownBack");
+        yield return new WaitForSeconds(0.8f);
+
+        animator.SetTrigger("Down");
+        yield return new WaitForSeconds(10f);
+        
+        animator.SetTrigger("WakeUp");
+        yield return new WaitForSeconds(0.8f);
+
+        CancelAnimation();
+        currentHP = maxHP;
+        isDead = false;
+    }
+
+    public void CancelAnimation()
+    {
+        animator.SetTrigger("Idle");
     }
 }

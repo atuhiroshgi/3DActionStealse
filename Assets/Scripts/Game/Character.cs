@@ -13,7 +13,7 @@ public abstract class Character : MonoBehaviour
     [SerializeField] protected int maxHP;
     #endregion
 
-    #region Protected Variables
+    #region protected変数
     protected Rigidbody rb;
     protected SkinnedMeshRenderer skinnedMR;
     protected int currentHP;
@@ -40,23 +40,17 @@ public abstract class Character : MonoBehaviour
         }
 
         currentHP -= damage;
+        Debug.Log("ダメージ!");
         
         if (currentHP <= 0)
         {
-            Debug.Log("やーらーれーたー");
             Die();
-        }
-        else
-        {
-            animator.SetTrigger("Damage");
-            isDamage = true;
         }
     }
 
     protected virtual void Die()
     {
         isDead = true;
-        // ここで死亡処理を追加
     }
 
     protected void Move(Vector3 direction, float speed)

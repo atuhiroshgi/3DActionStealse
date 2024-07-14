@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
     public void IncreaseAlertLevel(float amount)
     {
         AlertLevel += amount;
-        Debug.Log($"Œx‰ú“x:{AlertLevel}");
+        //Debug.Log($"Œx‰ú“x:{AlertLevel}");
     }
     #endregion
 }

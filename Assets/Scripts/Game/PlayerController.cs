@@ -41,7 +41,16 @@ public class PlayerController : Character
     #endregion
 
     #region public変数
+    [HideInInspector]
     public bool isHidden = false;      //透明化中かどうか
+    [HideInInspector]
+    public bool isAttack = false;      //攻撃中かどうか
+    [HideInInspector]
+    public bool isCharging = false;    //チャージ中かどうか
+    [HideInInspector]
+    public bool onceAttack = false;    //一度だけ攻撃判定を出すため
+    [HideInInspector]
+    public bool isChargeFound = false; //溜め攻撃の範囲に敵がいるかどうか
     #endregion
 
     #region private変数
@@ -66,12 +75,8 @@ public class PlayerController : Character
     private float damageDuration = 0.6f;//ダメージアニメーションの長さ
     private float currentHideTime = 0f;
     private bool isGround;              //接地しているかどうか
-    private bool isAttack = false;      //攻撃中かどうか
-    private bool isCharging = false;    //チャージ中かどうか
     private bool isRun = false;         //移動中かどうか
     private bool isNormalFound = false; //通常攻撃の範囲に敵がいるかどうか
-    private bool isChargeFound = false; //溜め攻撃の範囲に敵がいるかどうか
-    private bool onceAttack = false;    //一度だけ攻撃判定を出すため
     private bool jumpRequested = false; //ジャンプが要求されたかどうか
     #endregion
 

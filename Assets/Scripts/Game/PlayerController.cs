@@ -40,6 +40,10 @@ public class PlayerController : Character
 
     #endregion
 
+    #region public変数
+    public bool isHidden = false;      //透明化中かどうか
+    #endregion
+
     #region private変数
     private GameObject closestHitObject;    //最も近いオブジェクトを参照する
     private Vector3 moveSpeed;          //プレイヤーの移動速度
@@ -65,7 +69,6 @@ public class PlayerController : Character
     private bool isAttack = false;      //攻撃中かどうか
     private bool isCharging = false;    //チャージ中かどうか
     private bool isRun = false;         //移動中かどうか
-    private bool isHidden = false;      //透明化中かどうか
     private bool isNormalFound = false; //通常攻撃の範囲に敵がいるかどうか
     private bool isChargeFound = false; //溜め攻撃の範囲に敵がいるかどうか
     private bool onceAttack = false;    //一度だけ攻撃判定を出すため

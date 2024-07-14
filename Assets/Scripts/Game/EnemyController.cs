@@ -49,6 +49,7 @@ public class EnemyController : Character
         else
         {
             waitTimer += Time.deltaTime;
+
             if (waitTimer >= waitTimeAtPoint)
             {
                 isWaiting = false;
@@ -57,6 +58,7 @@ public class EnemyController : Character
             }
         }
 
+        animator.SetBool("isMoving", !isWaiting);
         CheckPlayerInSight();
     }
 
@@ -95,7 +97,7 @@ public class EnemyController : Character
             RaycastHit hit;
             if (Physics.Raycast(transform.position, directionToPlayer, out hit, sightRange))
             {
-                if (hit.transform.GetComponent<PlayerController>())
+                if (hit.transform.GetComponent<PlayerController>() && !player.isHidden)
                 {
                     float adjustedIncrease = 0;
                     adjustedIncrease += alertIncreaseAmount;

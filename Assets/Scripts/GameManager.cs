@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -45,8 +46,17 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region メインシーン
+    [SerializeField] private SlideUIController slideUIController;
+
     private List<CheckPoint> checkPoints = new List<CheckPoint>();
     private float AlertLevel = 0;
+    private float countdownTime = 180;
+    private bool onceSlide = false;
+
+    private void Update()
+    {
+        UpdateCountdownTimer();
+    }
 
     /// <summary>
     /// チェックポイントを登録する
@@ -80,22 +90,65 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void UpdateCountdownTimer()
+    {
+        Debug.Log(countdownTime);
+        if (countdownTime > 0)
+        {
+            countdownTime -= Time.deltaTime;
+
+            if(countdownTime <= 60 && !onceSlide)
+            {
+                onceSlide = true;
+                StartCoroutine(SlideUI());
+            }
+
+            if(countdownTime <= 0)
+            {
+                ToFailedScene();
+            }
+        }
+    }
+
+    private IEnumerator SlideUI()
+    {
+        yield return new WaitForSeconds(1.0f);
+        slideUIController.state = 1;
+        yield return new WaitForSeconds(3.0f);
+        slideUIController.state = 2;
+        yield return new WaitForSeconds(1.0f);
+    }
+
+    /// <summary>
+    /// 警戒度レベルを上げる
+    /// </summary>
+    /// <param name="amount"></param>
     public void IncreaseAlertLevel(float amount)
     {
         AlertLevel += amount;
         //Debug.Log($"警戒度:{AlertLevel}");
     }
 
+    /// <summary>
+    /// 警戒度を外部から取得するときに使うメソッド
+    /// </summary>
+    /// <returns></returns>
     public float GetAlertLevel()
     {
         return AlertLevel;
     }
 
+    /// <summary>
+    /// クリアシーンに移動するときの処理
+    /// </summary>
     public void ToClearScene()
     {
         SceneManager.LoadScene("Clear");
     }
 
+    /// <summary>
+    /// ミスシーンに移動するときの処理
+    /// </summary>
     public void ToFailedScene()
     {
         SceneManager.LoadScene("Failed");

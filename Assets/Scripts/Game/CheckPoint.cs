@@ -52,17 +52,11 @@ public class CheckPoint : MonoBehaviour
     private void Start()
     {
         meshRenderer = sphereObject.GetComponent<MeshRenderer>();
-        Init();
-
-        //初期状態ではおすすめUIを非表示に設定
-        recommendUI.SetActive(false);
-        //初期状態では進捗ゲージを非表示に設定
-        progressCircleUI.gameObject.SetActive(false);
-
-        checkPointUI.sprite = defaultIcon;
 
         //GameManagerにこのチェックポイントを登録
         GameManager.instance.RegisterCheckPoint(this);
+
+        Init();
     }
 
     private void Update()
@@ -87,6 +81,12 @@ public class CheckPoint : MonoBehaviour
 
     private void Init()
     {
+        //初期状態ではおすすめUIを非表示に設定
+        recommendUI.SetActive(false);
+        //初期状態では進捗ゲージを非表示に設定
+        progressCircleUI.gameObject.SetActive(false);
+
+        checkPointUI.sprite = defaultIcon;
         meshRenderer.material = beforeMaterial;
         progressCircleUI.fillAmount = 0f;
     }
@@ -143,7 +143,7 @@ public class CheckPoint : MonoBehaviour
 
         //進捗UIを非表示に設定
         progressCircleUI.gameObject.SetActive(false);
-
+        
         checkPointUI.sprite = captureIcon;
 
         //GameManagerにチェックポイントが制覇されたことを通知

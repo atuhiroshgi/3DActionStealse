@@ -47,11 +47,11 @@ public class GameManager : MonoBehaviour
 
     #region メインシーン
     [SerializeField] private SlideUIController slideUIController;
-
     private List<CheckPoint> checkPoints = new List<CheckPoint>();
     private float AlertLevel = 0;
     private float countdownTime = 180;
     private bool onceSlide = false;
+    private bool isIncrease = false;
 
     private void Update()
     {
@@ -90,6 +90,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// カウントダウンする処理
+    /// </summary>
     private void UpdateCountdownTimer()
     {
         Debug.Log(countdownTime);
@@ -110,6 +113,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// スライドするUIを制御する処理
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator SlideUI()
     {
         yield return new WaitForSeconds(1.0f);
@@ -126,7 +133,25 @@ public class GameManager : MonoBehaviour
     public void IncreaseAlertLevel(float amount)
     {
         AlertLevel += amount;
-        //Debug.Log($"警戒度:{AlertLevel}");
+        isIncrease = true;
+    }
+
+    /// <summary>
+    /// 警戒度が上がっているかどうかを外部から取得
+    /// </summary>
+    /// <returns>警戒度が上がっているか</returns>
+    public bool GetIsIncrease()
+    {
+        return isIncrease;
+    }
+
+    /// <summary>
+    /// 警戒度が上がっているかを外部から設定
+    /// </summary>
+    /// <param name="setBool"></param>
+    public void SetIsIncrease(bool setBool)
+    {
+        isIncrease = setBool;
     }
 
     /// <summary>

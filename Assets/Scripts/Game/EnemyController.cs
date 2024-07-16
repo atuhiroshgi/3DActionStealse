@@ -137,7 +137,6 @@ public class EnemyController : Character
         }
         else
         {
-            GameManager.Instance.SetIsIncrease(false);
             playerInSight = false;
         }
     }

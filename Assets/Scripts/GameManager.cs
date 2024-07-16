@@ -51,7 +51,6 @@ public class GameManager : MonoBehaviour
     private float AlertLevel = 0;
     private float countdownTime = 180;
     private bool onceSlide = false;
-    private bool isIncrease = false;
 
     private void Update()
     {
@@ -95,7 +94,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void UpdateCountdownTimer()
     {
-        Debug.Log(countdownTime);
         if (countdownTime > 0)
         {
             countdownTime -= Time.deltaTime;
@@ -111,6 +109,15 @@ public class GameManager : MonoBehaviour
                 ToFailedScene();
             }
         }
+    }
+
+    /// <summary>
+    /// 外部から残り時間を取得
+    /// </summary>
+    /// <returns>残り時間</returns>
+    public float GetTime()
+    {
+        return countdownTime;
     }
 
     /// <summary>
@@ -133,25 +140,6 @@ public class GameManager : MonoBehaviour
     public void IncreaseAlertLevel(float amount)
     {
         AlertLevel += amount;
-        isIncrease = true;
-    }
-
-    /// <summary>
-    /// 警戒度が上がっているかどうかを外部から取得
-    /// </summary>
-    /// <returns>警戒度が上がっているか</returns>
-    public bool GetIsIncrease()
-    {
-        return isIncrease;
-    }
-
-    /// <summary>
-    /// 警戒度が上がっているかを外部から設定
-    /// </summary>
-    /// <param name="setBool"></param>
-    public void SetIsIncrease(bool setBool)
-    {
-        isIncrease = setBool;
     }
 
     /// <summary>

@@ -140,6 +140,11 @@ public class GameManager : MonoBehaviour
     public void IncreaseAlertLevel(float amount)
     {
         AlertLevel += amount;
+
+        if(AlertLevel >= 100)
+        {
+            ToFailedScene();
+        }
     }
 
     /// <summary>

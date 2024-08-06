@@ -35,7 +35,7 @@ public class SettingUI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && isOpen == false)
+        if (Input.GetKeyDown(KeyCode.M) && isOpen == false)
         {
             StartCoroutine(OpenWindowWithDelay(0.5f));
         }

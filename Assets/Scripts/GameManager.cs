@@ -172,4 +172,37 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Failed");
     }
     #endregion
+
+    #region ê›íË
+    private float volume;
+    private float cameraSpeed;
+    private float bright;
+
+    public void SetVolume(float volume)
+    {
+        this.volume = volume;
+    }
+    public float GetVolume()
+    {
+        return volume;
+    }
+
+    public void SetCameraSpeed(float cameraSpeed)
+    {
+        this.cameraSpeed = cameraSpeed;
+    }
+    public float GetCameraSpeed()
+    {
+        return cameraSpeed;
+    }
+
+    public void SetBright(float bright)
+    {
+        this.bright = bright;
+    }
+    public float GetBright()
+    {
+        return bright;
+    }
+    #endregion
 }

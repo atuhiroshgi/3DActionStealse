@@ -7,11 +7,12 @@ public class TitleLogoAnimation : MonoBehaviour
     [SerializeField] private float endYPosition = 0f;
     [SerializeField] private float speed = 5f;
     [SerializeField] private float fallTime = 6f;
+    
+    public bool isAnimating = false;
 
     private RectTransform rectTransform;
     private Vector3 startPosition;
     private Vector3 endPosition;
-    private bool isAnimating = false;
 
     private void Start()
     {

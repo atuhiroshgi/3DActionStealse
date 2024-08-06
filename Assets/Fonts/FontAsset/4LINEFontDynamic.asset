@@ -73,9 +73,9 @@ Material:
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.8333333
+    - _ScaleRatioB: 0.6770833
+    - _ScaleRatioC: 0.6770833
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -1051,21 +1051,6 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
-  - m_Index: 97
-    m_Metrics:
-      m_Width: 59.546875
-      m_Height: 124.015625
-      m_HorizontalBearingX: 2.59375
-      m_HorizontalBearingY: 102.703125
-      m_HorizontalAdvance: 64.734375
-    m_GlyphRect:
-      m_X: 939
-      m_Y: 6
-      m_Width: 61
-      m_Height: 125
-    m_Scale: 1
-    m_AtlasIndex: 0
-    m_ClassDefinitionType: 0
   - m_Index: 62
     m_Metrics:
       m_Width: 45.765625
@@ -1531,21 +1516,6 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
-  - m_Index: 99
-    m_Metrics:
-      m_Width: 26
-      m_Height: 124.015625
-      m_HorizontalBearingX: 10.796875
-      m_HorizontalBearingY: 102.703125
-      m_HorizontalAdvance: 47.578125
-    m_GlyphRect:
-      m_X: 642
-      m_Y: 571
-      m_Width: 27
-      m_Height: 125
-    m_Scale: 1
-    m_AtlasIndex: 0
-    m_ClassDefinitionType: 0
   - m_Index: 94
     m_Metrics:
       m_Width: 55.25
@@ -1558,6 +1528,36 @@ MonoBehaviour:
       m_Y: 800
       m_Width: 57
       m_Height: 137
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
+  - m_Index: 97
+    m_Metrics:
+      m_Width: 59.546875
+      m_Height: 124.015625
+      m_HorizontalBearingX: 2.59375
+      m_HorizontalBearingY: 102.703125
+      m_HorizontalAdvance: 64.734375
+    m_GlyphRect:
+      m_X: 939
+      m_Y: 6
+      m_Width: 61
+      m_Height: 125
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
+  - m_Index: 99
+    m_Metrics:
+      m_Width: 26
+      m_Height: 124.015625
+      m_HorizontalBearingX: 10.796875
+      m_HorizontalBearingY: 102.703125
+      m_HorizontalAdvance: 47.578125
+    m_GlyphRect:
+      m_X: 642
+      m_Y: 571
+      m_Width: 27
+      m_Height: 125
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0

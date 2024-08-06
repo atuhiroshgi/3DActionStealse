@@ -7,9 +7,12 @@ using UnityEngine;
 public class TitleAnimation : MonoBehaviour
 {
     [SerializeField] private SkinnedMeshRenderer skinnedMR;
-    
+    [SerializeField] private TitleLogoAnimation titleLogoAnimation;
+
+    private Vector3 fixedPosition;
     private Animator animator;
     private int animateTime = 6;
+    private int pushSpaceCount = 0;
     private float timer;
     private bool isAnimating = false;
     private bool isAttacking = false;
@@ -20,20 +23,34 @@ public class TitleAnimation : MonoBehaviour
         animator = GetComponent<Animator>();
         timer = animateTime;
         skinnedMR.enabled = true;
+        fixedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
+            pushSpaceCount++;
+
+            if (pushSpaceCount == 1)
+            {
+                titleLogoAnimation.isAnimating = true;
+                return;
+            }
+
             isAnimating = true;
             animateTime = -1;
             animator.SetBool("Dissolved", true);
         }
 
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Backspace))
+        {
+            StartCoroutine(MoveUpAndBack());
+        }
+
         timer += Time.deltaTime;
 
-        if(timer >= 1f)
+        if (timer >= 1f)
         {
             animateTime--;
             timer = 0f;
@@ -44,7 +61,7 @@ public class TitleAnimation : MonoBehaviour
             isAnimating = true;
             PlayRandomAnimation();
         }
-        else if(animateTime == 0)
+        else if (animateTime == 0)
         {
             animateTime = 6;
             isAnimating = false;
@@ -62,11 +79,11 @@ public class TitleAnimation : MonoBehaviour
     {
         int randomIndex = Random.Range(0, 2);
         Debug.Log(randomIndex);
-        if(randomIndex == 0)
+        if (randomIndex == 0)
         {
             isAttacking = true;
         }
-        else if(randomIndex == 1)
+        else if (randomIndex == 1)
         {
             isSurprised = true;
         }
@@ -80,6 +97,34 @@ public class TitleAnimation : MonoBehaviour
         isAttacking = false;
         isSurprised = false;
     }
+
+    private IEnumerator MoveUpAndBack()
+    {
+        // 0.5•b‚©‚¯‚ÄY=24‚Ü‚ÅˆÚ“®
+        Vector3 targetPosition = new Vector3(transform.position.x, 24, transform.position.z);
+        float elapsedTime = 0f;
+        while (elapsedTime < 0.5f)
+        {
+            transform.position = Vector3.Lerp(transform.position, targetPosition, (elapsedTime / 0.5f));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = targetPosition;
+
+        // 0.5•b‘Ò‹@
+        yield return new WaitForSeconds(0.5f);
+
+        // 0.5•b‚©‚¯‚ÄFixedPosition‚É–ß‚é
+        elapsedTime = 0f;
+        while (elapsedTime < 0.5f)
+        {
+            transform.position = Vector3.Lerp(transform.position, fixedPosition, (elapsedTime / 0.5f));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = fixedPosition;
+    }
+
     private IEnumerator ChangeSceneAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -91,5 +136,4 @@ public class TitleAnimation : MonoBehaviour
         skinnedMR.enabled = false;
         StartCoroutine(ChangeSceneAfterDelay(0f));
     }
-
 }

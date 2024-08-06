@@ -8,6 +8,7 @@ public class TitleAnimation : MonoBehaviour
 {
     [SerializeField] private SkinnedMeshRenderer skinnedMR;
     [SerializeField] private TitleLogoAnimation titleLogoAnimation;
+    [SerializeField] private SettingUI settingUI;
 
     private Vector3 fixedPosition;
     private Animator animator;
@@ -45,7 +46,7 @@ public class TitleAnimation : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Backspace))
         {
-            StartCoroutine(MoveUpAndBack());
+            MenuAnimation();
         }
 
         timer += Time.deltaTime;
@@ -100,29 +101,55 @@ public class TitleAnimation : MonoBehaviour
 
     private IEnumerator MoveUpAndBack()
     {
-        // 0.5•b‚©‚¯‚ÄY=24‚Ü‚ÅˆÚ“®
-        Vector3 targetPosition = new Vector3(transform.position.x, 24, transform.position.z);
-        float elapsedTime = 0f;
-        while (elapsedTime < 0.5f)
-        {
-            transform.position = Vector3.Lerp(transform.position, targetPosition, (elapsedTime / 0.5f));
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        transform.position = targetPosition;
+        skinnedMR.enabled = true;
 
+        if(settingUI.isOpen == true)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, -40, this.transform.position.z);
+        }
+
+        float elapsedTime = 0f;
+        if(settingUI.isOpen == false)
+        {
+            // 0.5•b‚©‚¯‚ÄY=24‚Ü‚ÅˆÚ“®
+            Vector3 targetPosition = new Vector3(transform.position.x, 24, transform.position.z);
+            while (elapsedTime < 0.5f)
+            {
+                transform.position = Vector3.Lerp(transform.position, targetPosition, (elapsedTime / 0.5f));
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            transform.position = targetPosition;
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.5f);
+            Vector3 targetPosition = new Vector3(transform.position.x, 24, transform.position.z);
+            while (elapsedTime < 0.7f)
+            {
+                transform.position = Vector3.Lerp(transform.position, targetPosition, (elapsedTime / 0.7f));
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            transform.position = targetPosition;
+        }
         // 0.5•b‘Ò‹@
-        yield return new WaitForSeconds(0.5f);
+        //yield return new WaitForSeconds(0.5f);
 
         // 0.5•b‚©‚¯‚ÄFixedPosition‚É–ß‚é
         elapsedTime = 0f;
-        while (elapsedTime < 0.5f)
+        while (elapsedTime < 0.1f)
         {
             transform.position = Vector3.Lerp(transform.position, fixedPosition, (elapsedTime / 0.5f));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         transform.position = fixedPosition;
+
+        if(settingUI.isOpen == true)
+        {
+            skinnedMR.enabled = false;
+        }
     }
 
     private IEnumerator ChangeSceneAfterDelay(float delay)
@@ -135,5 +162,10 @@ public class TitleAnimation : MonoBehaviour
     {
         skinnedMR.enabled = false;
         StartCoroutine(ChangeSceneAfterDelay(0f));
+    }
+
+    public void MenuAnimation()
+    {
+        StartCoroutine(MoveUpAndBack());
     }
 }

@@ -5,14 +5,16 @@ using UnityEngine.UI;
 public class SettingUI : MonoBehaviour
 {
     [SerializeField] private GameObject settingWindow;
-    [SerializeField] private SkinnedMeshRenderer ghost;
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private Image volumeImage;
     [SerializeField] private Image cameraSpeedImage;
     [SerializeField] private Image brightImage;
+    [SerializeField] private TitleAnimation titleAnimation;
     [SerializeField] private float startYPosition = 10f;
     [SerializeField] private float endYPosition = 0f;
     [SerializeField] private float speed = 5f;
+
+    public bool isOpen = false;
 
     private Vector3 startPosition;
     private Vector3 endPosition;
@@ -33,15 +35,15 @@ public class SettingUI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && isOpen == false)
         {
             StartCoroutine(OpenWindowWithDelay(0.5f));
         }
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return) && isOpen == true)
         {
             SaveSetting();
         }
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        if (Input.GetKeyDown(KeyCode.Backspace) && isOpen == true)
         {
             StartCoroutine(CloseWindowWithDelay(0.5f));
         }
@@ -96,7 +98,8 @@ public class SettingUI : MonoBehaviour
             StopCoroutine(currentCoroutine);
         }
         currentCoroutine = StartCoroutine(MoveWindow(startPosition, endPosition));
-        ghost.enabled = false;
+        isOpen = true;
+        //ghost.enabled = false;
     }
 
     public void CloseWindow()
@@ -106,7 +109,9 @@ public class SettingUI : MonoBehaviour
             StopCoroutine(currentCoroutine);
         }
         currentCoroutine = StartCoroutine(MoveWindow(endPosition, startPosition));
-        ghost.enabled = true;
+        isOpen = false;
+        titleAnimation.MenuAnimation();
+        //ghost.enabled = true;
     }
 
     private IEnumerator MoveWindow(Vector3 fromPosition, Vector3 toPosition)

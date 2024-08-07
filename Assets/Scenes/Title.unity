@@ -1670,6 +1670,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782294569}
   m_CullTransparentMesh: 1
+--- !u!1 &791709362
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 791709364}
+  - component: {fileID: 791709363}
+  m_Layer: 0
+  m_Name: SettingController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &791709363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791709362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfb3f969e961af4985316c6fa5ef9ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingUI: {fileID: 1964706203}
+  volumeText: {fileID: 1313529240}
+  cameraSpeedText: {fileID: 1391966645}
+  brightText: {fileID: 223622857}
+  volumeValue: {fileID: 1511476143}
+  cameraValue: {fileID: 1483019539}
+  brightValue: {fileID: 991193121}
+  volumeGauge: {fileID: 1304209816}
+  cameraGauge: {fileID: 197732908}
+  brightGauge: {fileID: 1552285973}
+--- !u!4 &791709364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791709362}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -58.804195, y: 18.06391, z: 90}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &927071521
 GameObject:
   m_ObjectHideFlags: 0
@@ -3522,7 +3576,7 @@ GameObject:
   - component: {fileID: 1964706202}
   - component: {fileID: 1964706203}
   m_Layer: 0
-  m_Name: SettingController
+  m_Name: SettingUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4471,6 +4525,7 @@ SceneRoots:
   - {fileID: 128524056}
   - {fileID: 2749251016240488493}
   - {fileID: 585452482}
+  - {fileID: 791709364}
   - {fileID: 7370454604913158536}
-  - {fileID: 658208119}
   - {fileID: 686362223}
+  - {fileID: 658208119}

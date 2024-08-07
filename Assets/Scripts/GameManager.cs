@@ -190,6 +190,7 @@ public class GameManager : MonoBehaviour
     public void SetCameraSpeed(float cameraSpeed)
     {
         this.cameraSpeed = cameraSpeed;
+        Debug.Log(this.cameraSpeed);
     }
     public float GetCameraSpeed()
     {

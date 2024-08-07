@@ -79,7 +79,6 @@ public class TitleAnimation : MonoBehaviour
     private void PlayRandomAnimation()
     {
         int randomIndex = Random.Range(0, 2);
-        Debug.Log(randomIndex);
         if (randomIndex == 0)
         {
             isAttacking = true;

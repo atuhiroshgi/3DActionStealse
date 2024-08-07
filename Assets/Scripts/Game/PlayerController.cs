@@ -85,6 +85,7 @@ public class PlayerController : Character
         base.Start();
 
         pastPos = transform.position;
+        AudioManager.Instance.PlayBGM("GameBGM");
         Init();
     }
 

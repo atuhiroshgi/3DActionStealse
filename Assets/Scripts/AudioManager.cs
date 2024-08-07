@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance { get; private set; }
+    public static AudioManager Instance;
 
     [SerializeField] private AudioSource bgmSource;
     [SerializeField] private AudioSource sfxSource;
@@ -18,10 +19,40 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if(Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+    }
+
+    private void Start()
+    {
+        bgmSource.volume = GameManager.Instance.GetVolume();
+        sfxSource.volume = GameManager.Instance.GetVolume();
+    }
+
+    private void OnEnable()
+    {
+        if(GameManager.Instance != null)
+        {
+            GameManager.Instance.OnVolumeChanged += SetVolume;
+        }
+    }
+    private void OnDisable()
+    {
+        if(GameManager.Instance != null)
+        {
+            GameManager.Instance.OnVolumeChanged -= SetVolume;
         }
     }
 
@@ -52,5 +83,17 @@ public class AudioManager : MonoBehaviour
         {
             Debug.LogWarning($"å¯â âπÉNÉäÉbÉvÇ™ë∂ç›ÇµÇ‹ÇπÇÒ:{sfxName}");
         }
+    }
+
+    public void SetVolume(float volume)
+    {
+        if(bgmSource != null) bgmSource.volume = volume;
+        if(sfxSource != null) sfxSource.volume = volume;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        bgmSource.Stop();
+        bgmSource.clip = null;
     }
 }

@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -176,13 +177,15 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region ê›íË
-    private float volume;
+    public event Action<float> OnVolumeChanged;
+    private float volume = 1;
     private float cameraSpeed;
     private float bright;
 
     public void SetVolume(float volume)
     {
         this.volume = volume;
+        OnVolumeChanged?.Invoke(volume);
     }
     public float GetVolume()
     {

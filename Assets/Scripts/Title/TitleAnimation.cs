@@ -109,7 +109,7 @@ public class TitleAnimation : MonoBehaviour
         }
 
         float elapsedTime = 0f;
-        if(settingUI.isOpen == false)
+        if(!settingUI.isOpen)
         {
             // 0.5•b‚©‚¯‚ÄY=24‚Ü‚ÅˆÚ“®
             Vector3 targetPosition = new Vector3(transform.position.x, 24, transform.position.z);
@@ -121,7 +121,7 @@ public class TitleAnimation : MonoBehaviour
             }
             transform.position = targetPosition;
         }
-        else
+        else if(settingUI.isOpen)
         {
             yield return new WaitForSeconds(0.5f);
             Vector3 targetPosition = new Vector3(transform.position.x, 24, transform.position.z);

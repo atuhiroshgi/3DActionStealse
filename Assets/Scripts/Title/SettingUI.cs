@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SettingUI : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class SettingUI : MonoBehaviour
     [SerializeField] private Image cameraSpeedImage;
     [SerializeField] private Image brightImage;
     [SerializeField] private TitleAnimation titleAnimation;
+    [SerializeField] private MenuController menuController;
     [SerializeField] private float startYPosition = 10f;
     [SerializeField] private float endYPosition = 0f;
     [SerializeField] private float speed = 5f;
@@ -22,9 +24,6 @@ public class SettingUI : MonoBehaviour
 
     private void Start()
     {
-        // 設定の読み込み
-        LoadSetting();
-
         // 初期位置を設定
         startPosition = new Vector3(rectTransform.localPosition.x, startYPosition, rectTransform.localPosition.z);
         // 定位置を設定
@@ -37,6 +36,7 @@ public class SettingUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.M) && isOpen == false)
         {
+            LoadSetting();
             StartCoroutine(OpenWindowWithDelay(0.5f));
         }
         if (Input.GetKeyDown(KeyCode.Return) && isOpen == true)
@@ -61,6 +61,8 @@ public class SettingUI : MonoBehaviour
         PlayerPrefs.SetFloat("CameraSpeed", cameraSpeedImage.fillAmount);
         PlayerPrefs.SetFloat("Bright", brightImage.fillAmount);
 
+        AudioManager.Instance.PlaySFX("DecideMenu");
+
         StartCoroutine(CloseWindowWithDelay(0.5f));
     }
 
@@ -78,6 +80,10 @@ public class SettingUI : MonoBehaviour
         {
             brightImage.fillAmount = PlayerPrefs.GetFloat("Bright");
         }
+
+        // MenuControllerの設定値を更新
+        menuController.SetSettings(volumeImage.fillAmount, cameraSpeedImage.fillAmount, brightImage.fillAmount);
+        menuController.UpdateUI();
     }
 
     private IEnumerator OpenWindowWithDelay(float delay)
@@ -93,6 +99,8 @@ public class SettingUI : MonoBehaviour
 
     public void OpenWindow()
     {
+        AudioManager.Instance.PlaySFX("DownMenu");
+
         if (currentCoroutine != null)
         {
             StopCoroutine(currentCoroutine);
@@ -104,6 +112,8 @@ public class SettingUI : MonoBehaviour
 
     public void CloseWindow()
     {
+        AudioManager.Instance.PlaySFX("UpMenu");
+
         if (currentCoroutine != null)
         {
             StopCoroutine(currentCoroutine);

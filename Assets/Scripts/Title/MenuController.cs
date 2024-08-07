@@ -32,7 +32,7 @@ public class MenuController : MonoBehaviour
     private float volumeFill = 1f;
     private float cameraSpeedFill = 1f;
     private float brightFill = 1f;
-
+    private bool isChangingSetting = false;
 
     private void Start()
     {
@@ -44,24 +44,19 @@ public class MenuController : MonoBehaviour
     {
         if (settingUI.isOpen)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.A))
             {
                 ChangeState(-1);
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            else if (Input.GetKeyDown(KeyCode.D))
             {
                 ChangeState(1);
             }
 
-            if (Input.GetKey(KeyCode.UpArrow))
+            if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) && !isChangingSetting)
             {
-                ChangeSetting(0.01f);
+                StartCoroutine(ChangeSettingRoutine());
             }
-            else if (Input.GetKey(KeyCode.DownArrow))
-            {
-                ChangeSetting(-0.01f);
-            }
-
 
             UpdateUI();
         }
@@ -70,6 +65,7 @@ public class MenuController : MonoBehaviour
     private void ChangeState(int direction)
     {
         currentState = (State)(((int)currentState + direction + 3) % 3);
+        AudioManager.Instance.PlaySFX("MoveCursor");
     }
 
     private void ChangeSetting(float delta)
@@ -77,14 +73,26 @@ public class MenuController : MonoBehaviour
         switch (currentState)
         {
             case State.VOLUME:
+                if (volumeFill != Mathf.Clamp(volumeFill + delta, 0, 1))
+                {
+                    AudioManager.Instance.PlaySFX("MoveCursor");
+                }
                 volumeFill = Mathf.Clamp(volumeFill + delta, 0, 1);
                 break;
 
             case State.CAMERA:
+                if (cameraSpeedFill != Mathf.Clamp(cameraSpeedFill + delta, 0, 1))
+                {
+                    AudioManager.Instance.PlaySFX("MoveCursor");
+                }
                 cameraSpeedFill = Mathf.Clamp(cameraSpeedFill + delta, 0, 1);
                 break;
 
             case State.BRIGHT:
+                if (brightFill != Mathf.Clamp(brightFill + delta, 0, 1))
+                {
+                    AudioManager.Instance.PlaySFX("MoveCursor");
+                }
                 brightFill = Mathf.Clamp(brightFill + delta, 0, 1);
                 break;
 
@@ -94,7 +102,7 @@ public class MenuController : MonoBehaviour
         }
     }
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
         volumeGauge.fillAmount = volumeFill;
         cameraGauge.fillAmount = cameraSpeedFill;
@@ -107,5 +115,24 @@ public class MenuController : MonoBehaviour
         volumeText.color = currentState == State.VOLUME ? Color.yellow : Color.white;
         cameraSpeedText.color = currentState == State.CAMERA ? Color.yellow : Color.white;
         brightText.color = currentState == State.BRIGHT ? Color.yellow : Color.white;
+    }
+
+    public void SetSettings(float volume, float cameraSpeed, float bright)
+    {
+        volumeFill = volume;
+        cameraSpeedFill = cameraSpeed;
+        brightFill = bright;
+    }
+
+    private IEnumerator ChangeSettingRoutine()
+    {
+        isChangingSetting = true;
+        while (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+        {
+            float delta = Input.GetKey(KeyCode.W) ? 0.01f : -0.01f;
+            ChangeSetting(delta);
+            yield return new WaitForSeconds(0.05f);
+        }
+        isChangingSetting = false;
     }
 }

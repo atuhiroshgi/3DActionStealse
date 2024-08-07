@@ -25,6 +25,7 @@ public class TitleAnimation : MonoBehaviour
         timer = animateTime;
         skinnedMR.enabled = true;
         fixedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
+        AudioManager.Instance.PlayBGM("TitleBGM");
     }
 
     private void Update()

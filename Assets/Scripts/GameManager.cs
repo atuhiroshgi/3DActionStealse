@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene("Game");
     }
+
+
     #endregion
 
     #region ƒƒCƒ“ƒV[ƒ“

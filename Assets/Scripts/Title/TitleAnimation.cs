@@ -44,7 +44,7 @@ public class TitleAnimation : MonoBehaviour
             animator.SetBool("Dissolved", true);
         }
 
-        if (Input.GetKeyDown(KeyCode.M) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Backspace))
+        if ((Input.GetKeyDown(KeyCode.M) && !settingUI.isOpen) || (Input.GetKeyDown(KeyCode.Return) && settingUI.isOpen) || (Input.GetKeyDown(KeyCode.Backspace) && settingUI.isOpen))
         {
             MenuAnimation();
         }

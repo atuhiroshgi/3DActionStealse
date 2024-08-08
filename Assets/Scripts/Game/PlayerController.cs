@@ -387,6 +387,27 @@ public class PlayerController : Character
             {
                 isAttack = true;
                 Debug.Log("çUåÇ");
+                
+                int rnd = Random.Range(1, 5);
+                switch (rnd)
+                {
+                    case 1:
+                        AudioManager.Instance.PlaySFX("GhostLaugh1");
+                        break;
+                    case 2:
+                        AudioManager.Instance.PlaySFX("GhostLaugh2");
+                        break;
+                    case 3:
+                        AudioManager.Instance.PlaySFX("GhostLaugh3");
+                        break;
+                    case 4:
+                        AudioManager.Instance.PlaySFX("GhostLaugh4");
+                        break;
+                    default:
+                        Debug.LogError("PlayerController.Attack()ì‡Ç≈ïsê≥Ç»óêêîÇ™åüèoÇ≥ÇÍÇ‹ÇµÇΩ");
+                        break;
+                }
+
                 animator.SetTrigger("Attack");
                 StartCoroutine(ResetBoolAfterDelay("isAttack", attackDuration));
             }
@@ -476,9 +497,6 @@ public class PlayerController : Character
     /// </summary>
     private void ForDebug() 
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            TakeDamage(0);
-        }
+
     }
 }

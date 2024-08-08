@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class TitleLogoAnimation : MonoBehaviour
 {
+    [SerializeField] private TitleAnimation titleAnimation;
     [SerializeField] private float startYPosition = 10f;
     [SerializeField] private float endYPosition = 0f;
     [SerializeField] private float speed = 5f;
@@ -38,6 +39,7 @@ public class TitleLogoAnimation : MonoBehaviour
             if (Vector3.Distance(rectTransform.localPosition, endPosition) < 0.01f)
             {
                 rectTransform.localPosition = endPosition;
+                titleAnimation.pushSpaceCount = 1;
                 isAnimating = false;
             }
         }

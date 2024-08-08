@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
     private List<CheckPoint> checkPoints = new List<CheckPoint>();
     private float AlertLevel = 0;
     private float countdownTime = 180;
+    private bool playerInSight = false;
     private bool onceSlide = false;
 
     private void Update()
@@ -173,6 +174,16 @@ public class GameManager : MonoBehaviour
     public void ToFailedScene()
     {
         SceneManager.LoadScene("Failed");
+    }
+
+    public void SetInSight(bool playerInSight)
+    {
+        this.playerInSight = playerInSight;
+    }
+
+    public bool GetInSight()
+    {
+        return playerInSight;
     }
     #endregion
 

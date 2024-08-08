@@ -69,6 +69,8 @@ public class AudioManager : MonoBehaviour
         {
             Debug.LogWarning($"å¯â âπÉNÉäÉbÉvÇ™ë∂ç›ÇµÇ‹ÇπÇÒ:{bgmName}");
         }
+
+        Debug.Log(bgmName);
     }
 
     public void PlaySFX(string sfxName)
@@ -85,9 +87,14 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void StopBGM()
+    {
+        bgmSource.Stop();
+    }
+
     public void SetVolume(float volume)
     {
-        if(bgmSource != null) bgmSource.volume = volume;
+        if(bgmSource != null) bgmSource.volume = volume - 0.3f;
         if(sfxSource != null) sfxSource.volume = volume;
     }
 
@@ -95,5 +102,7 @@ public class AudioManager : MonoBehaviour
     {
         bgmSource.Stop();
         bgmSource.clip = null;
+        sfxSource.Stop();
+        sfxSource.Stop();
     }
 }

@@ -9,11 +9,12 @@ public class TitleAnimation : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer skinnedMR;
     [SerializeField] private TitleLogoAnimation titleLogoAnimation;
     [SerializeField] private SettingUI settingUI;
+    
+    public int pushSpaceCount = 0;
 
     private Vector3 fixedPosition;
     private Animator animator;
     private int animateTime = 6;
-    private int pushSpaceCount = 0;
     private float timer;
     private bool isAnimating = false;
     private bool isAttacking = false;
@@ -39,7 +40,11 @@ public class TitleAnimation : MonoBehaviour
                 titleLogoAnimation.isAnimating = true;
                 return;
             }
-
+            if(pushSpaceCount == 2)
+            {
+                AudioManager.Instance.StopBGM();
+            }
+            AudioManager.Instance.PlaySFX("StartGame");
             isAnimating = true;
             animateTime = -1;
             animator.SetBool("Dissolved", true);
@@ -161,7 +166,7 @@ public class TitleAnimation : MonoBehaviour
     public void Hidden()
     {
         skinnedMR.enabled = false;
-        StartCoroutine(ChangeSceneAfterDelay(0f));
+        StartCoroutine(ChangeSceneAfterDelay(1f));
     }
 
     public void MenuAnimation()

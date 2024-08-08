@@ -29,8 +29,8 @@ public class EnemyController : Character
     private int currentPatrolIndex;
     private float waitTimer;
     private float currentAngularVelocity;
-    private bool isWaiting;
     private bool playerInSight;
+    private bool isWaiting;
     #endregion
 
     protected override void Init()
@@ -45,6 +45,7 @@ public class EnemyController : Character
     private void Update()
     {
         CheckPlayerInSight();
+        GameManager.Instance.SetInSight(playerInSight);
 
         animator.SetBool("isMoving", !isWaiting);
 

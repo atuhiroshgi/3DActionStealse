@@ -137,6 +137,7 @@ public class CheckPoint : MonoBehaviour
     private void CaptureCheckPoint()
     {
         isCaptured = true;
+        AudioManager.Instance.PlaySFX("Capture");
 
         //チェックポイントのマテリアルを黄色に更新
         meshRenderer.material = afterMaterial;

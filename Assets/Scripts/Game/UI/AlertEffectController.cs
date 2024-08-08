@@ -16,7 +16,8 @@ public class AlertEffectController : MonoBehaviour
     private Color yellowColor;
     private Color redColor;
     private float alertLevel = 0;
-    private float blinkInterval = 0.3f;
+    private float lastAlertLevel;
+    private float blinkInterval = 0.2f;
     private bool isBlinking = false;
 
     private void Start()
@@ -63,6 +64,7 @@ public class AlertEffectController : MonoBehaviour
         {
             float t = (alertLevel - 40) / 60f;
             newColor = Color.Lerp(yellowColor, redColor, t);
+
         }
 
         topAlertEffect.color = newColor;

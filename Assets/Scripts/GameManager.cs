@@ -49,12 +49,11 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region メインシーン
-    [SerializeField] private SlideUIController slideUIController;
     private List<CheckPoint> checkPoints = new List<CheckPoint>();
     private float AlertLevel = 0;
     private float countdownTime = 180;
     private bool playerInSight = false;
-    private bool onceSlide = false;
+    private bool startFlag = false;
 
     private void Update()
     {
@@ -98,20 +97,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void UpdateCountdownTimer()
     {
-        if (countdownTime > 0)
+        if (countdownTime >= 1 && startFlag)
         {
             countdownTime -= Time.deltaTime;
-
-            if(countdownTime <= 60 && !onceSlide)
-            {
-                onceSlide = true;
-                StartCoroutine(SlideUI());
-            }
-
-            if(countdownTime <= 0)
-            {
-                ToFailedScene();
-            }
         }
     }
 
@@ -122,19 +110,6 @@ public class GameManager : MonoBehaviour
     public float GetTime()
     {
         return countdownTime;
-    }
-
-    /// <summary>
-    /// スライドするUIを制御する処理
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator SlideUI()
-    {
-        yield return new WaitForSeconds(1.0f);
-        slideUIController.state = 1;
-        yield return new WaitForSeconds(3.0f);
-        slideUIController.state = 2;
-        yield return new WaitForSeconds(1.0f);
     }
 
     /// <summary>
@@ -184,6 +159,16 @@ public class GameManager : MonoBehaviour
     public bool GetInSight()
     {
         return playerInSight;
+    }
+
+    public void SetStartFlag(bool startFlag)
+    {
+        this.startFlag = startFlag;
+    }
+
+    public bool GetStartFlag()
+    {
+        return startFlag;
     }
     #endregion
 

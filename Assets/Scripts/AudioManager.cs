@@ -9,16 +9,25 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioSource bgmSource;
     [SerializeField] private AudioSource sfxSource;
-
     [SerializeField] private List<AudioClip> bgmClips;
     [SerializeField] private List<AudioClip> sfxClips;
+    private void Start()
+    {
+        bgmSource.volume = GameManager.Instance.GetVolume();
+        sfxSource.volume = GameManager.Instance.GetVolume();
+    }
 
+    /// <summary>
+    /// シングルトンの実装
+    /// </summary>
     private void Awake()
     {
         if(Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            
+            //シーンがロードされたときにOnSceneLoadedを実行
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
@@ -27,6 +36,9 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// このスクリプトがアタッチされたオブジェクトが破壊されたら実行される
+    /// </summary>
     private void OnDestroy()
     {
         if(Instance == this)
@@ -35,19 +47,21 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        bgmSource.volume = GameManager.Instance.GetVolume();
-        sfxSource.volume = GameManager.Instance.GetVolume();
-    }
-
+    /// <summary>
+    /// シーンが読み込まれた時に実行されるメソッド
+    /// </summary>
     private void OnEnable()
     {
+        //Volumeが変わったらSetVolumeが実行される
         if(GameManager.Instance != null)
         {
             GameManager.Instance.OnVolumeChanged += SetVolume;
         }
     }
+
+    /// <summary>
+    /// シーンが切り替わるときに実行されるメソッド
+    /// </summary>
     private void OnDisable()
     {
         if(GameManager.Instance != null)
@@ -56,6 +70,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// BGMを流すときに実行するメソッド
+    /// </summary>
+    /// <param name="bgmName">BGMの名前</param>
     public void PlayBGM(string bgmName)
     {
         //bgmClipsの中からbgmNameと一致する名前を探してclipに格納
@@ -72,7 +90,19 @@ public class AudioManager : MonoBehaviour
 
         Debug.Log(bgmName);
     }
+    
+    /// <summary>
+    /// BGMを止めるときに実行するメソッド
+    /// </summary>
+    public void StopBGM()
+    {
+        bgmSource.Stop();
+    }
 
+    /// <summary>
+    /// 効果音を流すときに実行するメソッド
+    /// </summary>
+    /// <param name="sfxName">効果音の名前</param>
     public void PlaySFX(string sfxName)
     {
         //sfxClipsの中からsfxNameと一致する名前を探してclipに格納
@@ -87,11 +117,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopBGM()
-    {
-        bgmSource.Stop();
-    }
-
+    /// <summary>
+    /// 音量をセットするときに実行するメソッド
+    /// </summary>
+    /// <param name="volume">音量</param>
     public void SetVolume(float volume)
     {
         if(bgmSource != null) bgmSource.volume = volume - 0.3f;

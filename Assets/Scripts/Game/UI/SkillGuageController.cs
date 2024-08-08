@@ -35,7 +35,12 @@ public class SkillGuageController : MonoBehaviour
 
     private void Update()
     {
-        if(progress)
+        if (!GameManager.Instance.GetStartFlag())
+        {
+            return;
+        }
+
+        if (progress)
         {
             progressRing.fillAmount += 1.0f / waitTime * Time.deltaTime;
 

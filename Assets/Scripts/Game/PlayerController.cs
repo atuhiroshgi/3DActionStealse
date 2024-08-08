@@ -91,6 +91,11 @@ public class PlayerController : Character
 
     private void Update()
     {
+        if (!GameManager.Instance.GetStartFlag())
+        {
+            return;
+        }
+
         RotatePlayer();
         Jump();
         Hidden();
@@ -126,6 +131,11 @@ public class PlayerController : Character
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.GetStartFlag())
+        {
+            return;
+        }
+
         MovePlayer();
         if(jumpRequested)
         {

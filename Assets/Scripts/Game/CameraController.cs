@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private GameObject player;
+    [SerializeField] private float mouseInsensity = 1f;
 
     private float currentX = 0.0f;
     private float currentY = 0.0f;
@@ -19,13 +20,17 @@ public class CameraController : MonoBehaviour
         // マウスカーソルをロックし、非表示にする
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        float settingValue = GameManager.Instance.GetCameraSpeed();
+
+        mouseInsensity = settingValue * settingValue + 0.5f * settingValue + 0.5f;
     }
 
     void Update()
     {
         // マウスの移動量を取得
-        currentX += Input.GetAxis("Mouse X");
-        currentY -= Input.GetAxis("Mouse Y");
+        currentX += Input.GetAxis("Mouse X") * mouseInsensity;
+        currentY -= Input.GetAxis("Mouse Y") * mouseInsensity;
 
         // Y方向の回転角度を制限
         currentY = Mathf.Clamp(currentY, Y_ANGLE_MIN, Y_ANGLE_MAX);

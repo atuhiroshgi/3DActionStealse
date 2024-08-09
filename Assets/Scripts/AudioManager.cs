@@ -123,7 +123,7 @@ public class AudioManager : MonoBehaviour
     /// <param name="volume">‰¹—Ê</param>
     public void SetVolume(float volume)
     {
-        if(bgmSource != null) bgmSource.volume = volume - 0.3f;
+        if(bgmSource != null) bgmSource.volume = volume * 0.7f;
         if(sfxSource != null) sfxSource.volume = volume;
     }
 

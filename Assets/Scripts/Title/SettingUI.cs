@@ -30,6 +30,8 @@ public class SettingUI : MonoBehaviour
         endPosition = new Vector3(rectTransform.localPosition.x, endYPosition, rectTransform.localPosition.z);
         // ロゴの位置を初期位置に設定
         rectTransform.localPosition = startPosition;
+
+        LoadSetting();
     }
 
     private void Update()
@@ -84,6 +86,11 @@ public class SettingUI : MonoBehaviour
         // MenuControllerの設定値を更新
         menuController.SetSettings(volumeImage.fillAmount, cameraSpeedImage.fillAmount, brightImage.fillAmount);
         menuController.UpdateUI();
+
+        //GameManagerにロードした情報を渡す
+        GameManager.Instance.SetVolume(PlayerPrefs.GetFloat("Volume"));
+        GameManager.Instance.SetCameraSpeed(PlayerPrefs.GetFloat("CameraSpeed"));
+        GameManager.Instance.SetBright(PlayerPrefs.GetFloat("Bright"));
     }
 
     private IEnumerator OpenWindowWithDelay(float delay)

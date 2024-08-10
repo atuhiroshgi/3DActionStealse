@@ -119,6 +119,12 @@ public class EnemyController : Character
                     isWaiting = true;
                     playerInSight = true;
 
+                    if (player.isHuge)
+                    {
+                        Die();
+                        return;
+                    }
+
                     if(isDead)
                     {
                         return;

@@ -25,8 +25,16 @@ public class PlayerController : Character
     [SerializeField] private Sprite longLockOnCrosshairImage;
     [Header("スキルゲージの管理")]
     [SerializeField] private SkillGuageController skillGuageController;
+    [Header("おばけオブジェクトのTransform")]
+    [SerializeField] private Transform ghostTransform;
+    [Header("おばけオブジェクトのCollider")]
+    [SerializeField] private CapsuleCollider ghostCollider;
     [Header("地面判定をつけるレイヤー")]
     [SerializeField] private LayerMask groundLayers;
+    [Header("通常時のサイズ")]
+    [SerializeField] private Vector3 initialScale = new Vector3(1.7f, 1.7f, 1.7f);
+    [Header("巨大化時のサイズ")]
+    [SerializeField] private Vector3 hugeScale = new Vector3(4f, 4f, 4f);
     [Header("おばけが進行方向に向く速度")]
     [SerializeField] private float smoothTime = 0.1f;
     [Header("ジャンプの高さ")]
@@ -37,7 +45,6 @@ public class PlayerController : Character
     [SerializeField] private float attackRange;
     [Header("溜め攻撃の射程")]
     [SerializeField] private float chargeAttackRange;
-
     #endregion
 
     #region public変数
@@ -51,6 +58,8 @@ public class PlayerController : Character
     public bool onceAttack = false;    //一度だけ攻撃判定を出すため
     [HideInInspector]
     public bool isChargeFound = false; //溜め攻撃の範囲に敵がいるかどうか
+    [HideInInspector]
+    public bool isHuge = false;       //巨大化しているかどうか
     #endregion
 
     #region private変数
@@ -165,6 +174,10 @@ public class PlayerController : Character
 
         //クロスヘアの初期化
         crosshair.sprite = defaultCrosshairImage;
+
+        //初期サイズの設定
+        ghostTransform.localScale = initialScale;
+        UpdateColliderSize();
     }
      
     /// <summary>
@@ -491,6 +504,29 @@ public class PlayerController : Character
         animator.SetTrigger("Idle");
     }
 
+    #region サイズ変更
+    public void ResizeInitialSize()
+    {
+        isHuge = false;
+        ghostTransform.localScale = initialScale;
+        UpdateColliderSize();
+    }
+    public void ResizeHugeSize()
+    {
+        isHuge = true;
+        ghostTransform.localScale = hugeScale;
+        UpdateColliderSize();
+    }
+    public void UpdateColliderSize()
+    {
+        if(ghostCollider != null)
+        {
+            ghostCollider.radius = ghostTransform.localScale.x * 5 / 17;
+            ghostCollider.height = ghostTransform.localScale.y * 15 / 17;
+        }
+    }
+    #endregion
+
     #region 接地判定
     private void OnCollisionEnter(Collision collision)
     {
@@ -507,6 +543,13 @@ public class PlayerController : Character
     /// </summary>
     private void ForDebug() 
     {
-
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            ResizeHugeSize();
+        }
+        else if (Input.GetKeyDown(KeyCode.Y))
+        {
+            ResizeInitialSize();
+        }
     }
 }

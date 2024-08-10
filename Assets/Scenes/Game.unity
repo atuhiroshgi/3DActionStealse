@@ -7902,6 +7902,7 @@ GameObject:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
   - component: {fileID: 705507996}
+  - component: {fileID: 705507997}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -8009,6 +8010,19 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &705507997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705507993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d449add05b16941b65f21d70076ee4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directionalLight: {fileID: 705507994}
 --- !u!1 &706703120
 GameObject:
   m_ObjectHideFlags: 0
@@ -10416,6 +10430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 3481391037895753400}
+  mouseInsensity: 1
 --- !u!1 &966643734
 GameObject:
   m_ObjectHideFlags: 0
@@ -11697,7 +11712,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1100925369
 RectTransform:
   m_ObjectHideFlags: 0
@@ -38238,9 +38253,13 @@ MonoBehaviour:
   lockOnCrosshairImage: {fileID: 1498733011, guid: f87436a6443ef3b49bc99da5507a036a, type: 3}
   longLockOnCrosshairImage: {fileID: 1328683935, guid: 7f879efeceddddb49b105ea8684b6ad8, type: 3}
   skillGuageController: {fileID: 1553380644}
+  ghostTransform: {fileID: 4259193691722310658}
+  ghostCollider: {fileID: 4259193691722310660}
   groundLayers:
     serializedVersion: 2
     m_Bits: 8
+  initialScale: {x: 1.7, y: 1.7, z: 1.7}
+  hugeScale: {x: 4, y: 4, z: 4}
   smoothTime: 0.01
   jumpForce: 7
   hideDuration: 5
@@ -38251,6 +38270,7 @@ MonoBehaviour:
   isCharging: 0
   onceAttack: 0
   isChargeFound: 0
+  isHuge: 0
 --- !u!82 &4259193691722310664
 AudioSource:
   m_ObjectHideFlags: 0
@@ -42121,7 +42141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51704725526ac2f489bb9a176e54425d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countdownTime: 10
 --- !u!4 &5253408934438469531
 Transform:
   m_ObjectHideFlags: 0

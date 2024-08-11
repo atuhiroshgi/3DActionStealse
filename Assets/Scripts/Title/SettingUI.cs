@@ -5,11 +5,18 @@ using TMPro;
 
 public class SettingUI : MonoBehaviour
 {
-    [SerializeField] private GameObject settingWindow;
+    [SerializeField] private GameObject menuWindow;
+    [SerializeField] private GameObject settingElement;
+    [SerializeField] private GameObject playerInfoElement;
+    [SerializeField] private GameObject explainElement;
+    [SerializeField] private Image settingTab;
+    [SerializeField] private Image playerInfoTab;
+    [SerializeField] private Image explainTab;
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private Image volumeImage;
     [SerializeField] private Image cameraSpeedImage;
     [SerializeField] private Image brightImage;
+    [SerializeField] private RectTransform supportArrowRectTransform;
     [SerializeField] private TitleAnimation titleAnimation;
     [SerializeField] private MenuController menuController;
     [SerializeField] private float startYPosition = 10f;
@@ -20,7 +27,22 @@ public class SettingUI : MonoBehaviour
 
     private Vector3 startPosition;
     private Vector3 endPosition;
+    private Vector3 settingPosition = new Vector3(-645, 345, 0);
+    private Vector3 playerInfoPosition = new Vector3(0, 345, 0);
+    private Vector3 explainPosition = new Vector3(645, 345, 0);
+    private Color defaultColor = new Color(1f, 1f, 1f);
+    private Color decideColor = new Color(166f / 255f, 166f / 255f, 166f / 255f);
+
     private Coroutine currentCoroutine;
+
+    private enum State
+    {
+        SETTING,
+        PLAYERINFO,
+        EXPLAIN,
+    }
+
+    private State currentState;
 
     private void Start()
     {
@@ -30,6 +52,9 @@ public class SettingUI : MonoBehaviour
         endPosition = new Vector3(rectTransform.localPosition.x, endYPosition, rectTransform.localPosition.z);
         // ÉçÉSÇÃà íuÇèâä˙à íuÇ…ê›íË
         rectTransform.localPosition = startPosition;
+
+        currentState = State.SETTING;
+        supportArrowRectTransform.anchoredPosition = settingPosition;
 
         LoadSetting();
     }
@@ -48,6 +73,16 @@ public class SettingUI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Backspace) && isOpen == true)
         {
             StartCoroutine(CloseWindowWithDelay(0.5f));
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            MoveTag(-1);
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            MoveTag(1);
         }
     }
 
@@ -129,6 +164,42 @@ public class SettingUI : MonoBehaviour
         isOpen = false;
         titleAnimation.MenuAnimation();
         //ghost.enabled = true;
+    }
+
+    private void MoveTag(int direction)
+    {
+        currentState = (State)(((int)currentState + direction + 3) % 3);
+
+        settingTab.color = currentState == State.SETTING ? decideColor : defaultColor;
+        playerInfoTab.color = currentState == State.PLAYERINFO ? decideColor : defaultColor;
+        explainTab.color = currentState == State.EXPLAIN ? decideColor : defaultColor;
+
+        switch (currentState)
+        {
+            case State.SETTING:
+                settingElement.SetActive(true);
+                playerInfoElement.SetActive(false);
+                explainElement.SetActive(false);
+                supportArrowRectTransform.anchoredPosition = settingPosition;
+                break;
+
+            case State.PLAYERINFO:
+                settingElement.SetActive(false);
+                playerInfoElement.SetActive(true);
+                explainElement.SetActive(false);
+                supportArrowRectTransform.anchoredPosition = playerInfoPosition;
+                break;
+
+            case State.EXPLAIN:
+                settingElement.SetActive(false);
+                playerInfoElement.SetActive(false);
+                explainElement.SetActive(true);
+                supportArrowRectTransform.anchoredPosition = explainPosition;
+                break;
+
+            default:
+                break;
+        }
     }
 
     private IEnumerator MoveWindow(Vector3 fromPosition, Vector3 toPosition)

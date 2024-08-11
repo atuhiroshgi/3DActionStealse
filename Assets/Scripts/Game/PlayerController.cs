@@ -517,7 +517,7 @@ public class PlayerController : Character
         ghostTransform.localScale = hugeScale;
         UpdateColliderSize();
     }
-    public void UpdateColliderSize()
+    private void UpdateColliderSize()
     {
         if(ghostCollider != null)
         {

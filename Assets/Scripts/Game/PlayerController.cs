@@ -11,7 +11,11 @@ public class PlayerController : Character
     #region SerializeField
     [Header("通常時のマテリアル")]
     [SerializeField] private Material normalMaterial;
-    [Header("半透明のマテリアル")]
+    [Header("透明化モードのマテリアル")]
+    [SerializeField] private Material normalMaterial2;
+    [Header("巨大化モードのマテリアル")]
+    [SerializeField] private Material normalMaterial3;
+    [Header("透明化時のマテリアル")]
     [SerializeField] private Material hiddenMaterial;
     [Header("プレイヤーの初期スポーン")]
     [SerializeField] private Transform startPos;
@@ -39,12 +43,14 @@ public class PlayerController : Character
     [SerializeField] private float smoothTime = 0.1f;
     [Header("ジャンプの高さ")]
     [SerializeField] private float jumpForce;
-    [Header("透明化を維持できる時間")]
-    [SerializeField] private float hideDuration = 3f;
     [Header("攻撃の射程")]
     [SerializeField] private float attackRange;
     [Header("溜め攻撃の射程")]
     [SerializeField] private float chargeAttackRange;
+    [Header("透明化継続時間")]
+    [SerializeField] private float hideDuration = 3f;
+    [Header("巨大化継続時間")]
+    [SerializeField] private float hugeTime = 5f;
     #endregion
 
     #region public変数
@@ -64,6 +70,7 @@ public class PlayerController : Character
 
     #region private変数
     private GameObject closestHitObject;    //最も近いオブジェクトを参照する
+    private Material defaultMaterial;   //基本のマテリアル
     private Vector3 moveSpeed;          //プレイヤーの移動速度
     private Vector3 currentPos;         //プレイヤーの現在の位置
     private Vector3 pastPos;            //プレイヤーの過去の位置
@@ -77,8 +84,10 @@ public class PlayerController : Character
     private float moveSpeedIn;          //スピード管理用
     private float defaultMoveSpeed = 8f;//通常時の移動速度
     private float hiddenMoveSpeed = 15f;//隠れ時の移動速度
+    private float hugeMoveSpeed = 12f;//隠れ時の移動速度
     private float defaultJumpForce = 7f;//通常時のジャンプする力
     private float hiddenJumpForce = 12f;//隠れ時のジャンプする力
+    private float hugeJumpForce = 12f;
     private float attackDuration = 0.8f;//攻撃アニメーションの長さ
     private float chargeDuration = 1.6f;//チャージアニメーションの長さ
     private float damageDuration = 0.6f;//ダメージアニメーションの長さ
@@ -87,6 +96,7 @@ public class PlayerController : Character
     private bool isRun = false;         //移動中かどうか
     private bool isNormalFound = false; //通常攻撃の範囲に敵がいるかどうか
     private bool jumpRequested = false; //ジャンプが要求されたかどうか
+    private int selectedIndex;
     #endregion
 
     protected override void Start()
@@ -121,9 +131,19 @@ public class PlayerController : Character
         }
 
         //ジャンプ入力の取得
-        if(Input.GetKeyDown(KeyCode.Space)&& isGround)
+        if(Input.GetKeyDown(KeyCode.Space) && isGround)
         {
             jumpRequested = true;
+        }
+
+        //巨大化の処理
+        if(Input.GetKeyDown(KeyCode.Q) && skillGuageController.DecreasedStackCount((5)) && selectedIndex == 2 && !isHuge)
+        {
+            StartCoroutine(hugeCoroutine());
+        }
+        else if(Input.GetKeyDown(KeyCode.Q) && isHuge)
+        {
+            ResizeInitialSize();
         }
 
         //攻撃を1回で済ませる処理をリセット
@@ -169,8 +189,26 @@ public class PlayerController : Character
             Debug.LogError("StartPosが設定されていません。");
         }
 
+        selectedIndex = GameManager.Instance.GetSelectedIndex();
+
+        //どのモードのマテリアルか決める
+        switch (selectedIndex)
+        {
+            case 0:
+                defaultMaterial = normalMaterial;
+                break;
+
+            case 1:
+                defaultMaterial = normalMaterial2;
+                break;
+
+            case 2:
+                defaultMaterial = normalMaterial3;
+                break;
+        }
+
         //マテリアルの初期化
-        skinnedMR.material = normalMaterial;
+        skinnedMR.material = defaultMaterial;
 
         //クロスヘアの初期化
         crosshair.sprite = defaultCrosshairImage;
@@ -254,7 +292,7 @@ public class PlayerController : Character
     /// </summary>
     private void Hidden()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && selectedIndex == 1)
         {
             if(isHidden)
             {
@@ -312,7 +350,7 @@ public class PlayerController : Character
     private void EndHidden()
     {
         isHidden = false;
-        skinnedMR.material = normalMaterial;
+        skinnedMR.material = defaultMaterial;
         moveSpeedIn = defaultMoveSpeed;
         jumpForce = defaultJumpForce;
     }
@@ -505,16 +543,20 @@ public class PlayerController : Character
     }
 
     #region サイズ変更
-    public void ResizeInitialSize()
+    private void ResizeInitialSize()
     {
         isHuge = false;
         ghostTransform.localScale = initialScale;
+        moveSpeedIn = defaultMoveSpeed;
+        jumpForce = defaultJumpForce;
         UpdateColliderSize();
     }
-    public void ResizeHugeSize()
+    private void ResizeHugeSize()
     {
         isHuge = true;
         ghostTransform.localScale = hugeScale;
+        moveSpeedIn = hugeMoveSpeed;
+        jumpForce = hugeJumpForce;
         UpdateColliderSize();
     }
     private void UpdateColliderSize()
@@ -524,6 +566,12 @@ public class PlayerController : Character
             ghostCollider.radius = ghostTransform.localScale.x * 5 / 17;
             ghostCollider.height = ghostTransform.localScale.y * 15 / 17;
         }
+    }
+    private IEnumerator hugeCoroutine()
+    {
+        ResizeHugeSize();
+        yield return new WaitForSeconds(hugeTime);
+        ResizeInitialSize();
     }
     #endregion
 
@@ -543,13 +591,6 @@ public class PlayerController : Character
     /// </summary>
     private void ForDebug() 
     {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            ResizeHugeSize();
-        }
-        else if (Input.GetKeyDown(KeyCode.Y))
-        {
-            ResizeInitialSize();
-        }
+
     }
 }

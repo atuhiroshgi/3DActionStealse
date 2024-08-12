@@ -9,10 +9,14 @@ public class TitleAnimation : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer skinnedMR;
     [SerializeField] private TitleLogoAnimation titleLogoAnimation;
     [SerializeField] private SettingUI settingUI;
+    [SerializeField] private GameObject startUI;
+    [SerializeField] private GameObject setSkillUI;
+    [SerializeField] private GameObject selectGhost;
     
     public int pushSpaceCount = 0;
 
     private Vector3 fixedPosition;
+    private Vector3 zoomPosition = new Vector3(0f, -5.9f, 8.2f);
     private Animator animator;
     private int animateTime = 6;
     private float timer;
@@ -25,7 +29,11 @@ public class TitleAnimation : MonoBehaviour
         animator = GetComponent<Animator>();
         timer = animateTime;
         skinnedMR.enabled = true;
-        fixedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
+        startUI.SetActive(true);
+        setSkillUI.SetActive(false);
+        selectGhost.SetActive(false);
+        fixedPosition = new Vector3(-30f, -13.5f, 40.7f);
+        this.transform.position = fixedPosition;
         AudioManager.Instance.PlayBGM("TitleBGM");
     }
 
@@ -35,14 +43,25 @@ public class TitleAnimation : MonoBehaviour
         {
             pushSpaceCount++;
 
-            if (pushSpaceCount == 1)
+            switch (pushSpaceCount)
             {
-                titleLogoAnimation.isAnimating = true;
-                return;
-            }
-            if(pushSpaceCount == 2)
-            {
-                AudioManager.Instance.StopBGM();
+                case 1:
+                    titleLogoAnimation.isAnimating = true;
+                    return;
+                case 2:
+                    setSkillUI.SetActive(true);
+                    startUI.SetActive(false);
+                    selectGhost.SetActive(true);
+                    skinnedMR.enabled = false;
+                    return;
+                case 3:
+                    setSkillUI.SetActive(false);
+                    selectGhost.SetActive(false);
+                    skinnedMR.enabled = true;
+                    this.transform.position = new Vector3(0f, -5.9f, 8.2f);
+                    this.transform.Rotate(0, 60, 0);
+                    AudioManager.Instance.StopBGM();
+                    break;
             }
             AudioManager.Instance.PlaySFX("StartGame");
             isAnimating = true;

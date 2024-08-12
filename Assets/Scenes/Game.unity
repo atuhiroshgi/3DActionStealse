@@ -38246,6 +38246,8 @@ MonoBehaviour:
   animator: {fileID: 4259193691722310659}
   maxHP: 100
   normalMaterial: {fileID: 2100000, guid: d11e6205c7cc9470aacd9fde3100bfe2, type: 2}
+  normalMaterial2: {fileID: 2100000, guid: 2392ed4fe3860254cb09551514ab81ed, type: 2}
+  normalMaterial3: {fileID: 2100000, guid: 049dedbe148a55646b82ad9838daf26c, type: 2}
   hiddenMaterial: {fileID: 2100000, guid: efea6894b31c77f4294206ee0e0fcdff, type: 2}
   startPos: {fileID: 978168727}
   crosshair: {fileID: 1279454176}
@@ -38262,9 +38264,10 @@ MonoBehaviour:
   hugeScale: {x: 4, y: 4, z: 4}
   smoothTime: 0.01
   jumpForce: 7
-  hideDuration: 5
   attackRange: 40
   chargeAttackRange: 80
+  hideDuration: 5
+  hugeTime: 5
   isHidden: 0
   isAttack: 0
   isCharging: 0

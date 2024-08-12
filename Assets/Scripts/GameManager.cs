@@ -40,11 +40,33 @@ public class GameManager : MonoBehaviour
     }
 
     #region タイトルシーン
+    private string skillName;
+    private int selectedIndex;
+
     public void ToGameScene()
     {
         SceneManager.LoadScene("Game");
     }
 
+    public void SetSkill(string skillName)
+    {
+        this.skillName = skillName;
+    }
+
+    public string GetSkill()
+    {
+        return skillName;
+    }
+
+    public void SetSelectedIndex(int selectedIndex)
+    {
+        this.selectedIndex = selectedIndex;
+    }
+
+    public int GetSelectedIndex()
+    {
+        return selectedIndex;
+    }
 
     #endregion
 

@@ -19,12 +19,12 @@ public class SelectGhostAnimation : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W) && selectedIndex != 2)
+        if (Input.GetKeyDown(KeyCode.S) && selectedIndex != 2)
         {
             selectedIndex++;
             targetPosition += new Vector3(0, 12, 0);
         }
-        if (Input.GetKeyDown(KeyCode.S) && selectedIndex != 0)
+        if (Input.GetKeyDown(KeyCode.W) && selectedIndex != 0)
         {
             selectedIndex--;
             targetPosition -= new Vector3(0, 12, 0);

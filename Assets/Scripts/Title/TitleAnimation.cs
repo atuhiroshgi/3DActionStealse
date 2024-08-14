@@ -12,6 +12,7 @@ public class TitleAnimation : MonoBehaviour
     [SerializeField] private GameObject startUI;
     [SerializeField] private GameObject setSkillUI;
     [SerializeField] private GameObject selectGhost;
+    [SerializeField] private Material[] materials;
     
     public int pushSpaceCount = 0;
 
@@ -61,6 +62,13 @@ public class TitleAnimation : MonoBehaviour
                     this.transform.position = new Vector3(0f, -5.9f, 8.2f);
                     this.transform.Rotate(0, 60, 0);
                     AudioManager.Instance.StopBGM();
+
+                    int selectedIndex = GameManager.Instance.GetSelectedIndex();
+                    if(selectedIndex >= 0 && selectedIndex < materials.Length)
+                    {
+                        skinnedMR.material = materials[selectedIndex];
+                    }
+
                     break;
             }
             AudioManager.Instance.PlaySFX("StartGame");

@@ -194,6 +194,15 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    #region リザルトシーン
+    
+    public void ToTitleScene()
+    {
+        SceneManager.LoadScene("Title");
+    }
+
+    #endregion
+
     #region 設定
     public event Action<float> OnVolumeChanged;
     private float volume = 1;

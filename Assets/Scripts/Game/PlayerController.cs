@@ -92,6 +92,9 @@ public class PlayerController : Character
     private float chargeDuration = 1.6f;//チャージアニメーションの長さ
     private float damageDuration = 0.6f;//ダメージアニメーションの長さ
     private float currentHideTime = 0f;
+    private float accelerationDuration = 0.5f;
+    private float accelerationMultiplier = 2f;
+    private float upwardForce = 1f;
     private bool isGround;              //接地しているかどうか
     private bool isRun = false;         //移動中かどうか
     private bool isNormalFound = false; //通常攻撃の範囲に敵がいるかどうか
@@ -137,13 +140,25 @@ public class PlayerController : Character
         }
 
         //巨大化の処理
-        if(Input.GetKeyDown(KeyCode.Q) && skillGuageController.DecreasedStackCount((5)) && selectedIndex == 2 && !isHuge)
+        if(Input.GetKeyDown(KeyCode.Q) && selectedIndex == 2 && !isHuge)
         {
-            StartCoroutine(hugeCoroutine());
+            if (skillGuageController.DecreasedStackCount((5)))
+            {
+                StartCoroutine(hugeCoroutine());
+            }
         }
         else if(Input.GetKeyDown(KeyCode.Q) && isHuge)
         {
             ResizeInitialSize();
+        }
+
+        //1秒間ブースト
+        if(Input.GetKeyDown(KeyCode.Q) && selectedIndex == 0 && isGround)
+        {
+            if (skillGuageController.DecreasedStackCount(1))
+            {
+                StartCoroutine(AccelerateInDirection());
+            }
         }
 
         //攻撃を1回で済ませる処理をリセット
@@ -540,6 +555,28 @@ public class PlayerController : Character
         }
 
         animator.SetTrigger("Idle");
+    }
+
+    /// <summary>
+    /// ブースト用
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator AccelerateInDirection()
+    {
+        isGround = false;
+
+        float timer = 0f;
+        Vector3 initialVelocity = rb.velocity;
+        Vector3 accelerationDirection = transform.forward + transform.up * upwardForce;
+
+        while (timer < accelerationDuration)
+        {
+            rb.velocity = accelerationDirection * moveSpeedIn * accelerationMultiplier;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        rb.velocity = initialVelocity;
     }
 
     #region サイズ変更

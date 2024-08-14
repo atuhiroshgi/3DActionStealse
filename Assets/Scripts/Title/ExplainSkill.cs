@@ -21,7 +21,7 @@ public class ExplainSkill : MonoBehaviour
         switch (GameManager.Instance.GetSelectedIndex())
         {
             case 0:
-                explainText.text = "・スキルなし\n\n・プレイに自信があるゲームに慣れている君におすすめ！";
+                explainText.text = "・ストックを1消費してキャラが向いている方向に飛べる\n\n・プレイに自信があるゲームに慣れている君におすすめ！";
                 break;
 
             case 1:

@@ -105,7 +105,7 @@ public class PlayerController : Character
     protected override void Start()
     {
         base.Start();
-
+        GameManager.Instance.SetTime(180);
         pastPos = transform.position;
         AudioManager.Instance.PlayBGM("GameBGM");
         Init();
@@ -628,6 +628,9 @@ public class PlayerController : Character
     /// </summary>
     private void ForDebug() 
     {
-
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            GameManager.Instance.SetTime(10);
+        }
     }
 }

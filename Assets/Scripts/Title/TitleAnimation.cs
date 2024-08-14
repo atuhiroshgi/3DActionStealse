@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TitleAnimation : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class TitleAnimation : MonoBehaviour
     [SerializeField] private GameObject startUI;
     [SerializeField] private GameObject setSkillUI;
     [SerializeField] private GameObject selectGhost;
+    [SerializeField] private GameObject backArrowImage;
+    [SerializeField] private Image backArrowGauge;
     [SerializeField] private Material[] materials;
     
     public int pushSpaceCount = 0;
@@ -21,18 +24,23 @@ public class TitleAnimation : MonoBehaviour
     private Animator animator;
     private int animateTime = 6;
     private float timer;
+    private float qKeyHoldTime;
+    private float decayRate = 0.5f;
+    private float holdDuration = 2f;
     private bool isAnimating = false;
     private bool isAttacking = false;
     private bool isSurprised = false;
 
     private void Start()
     {
+        pushSpaceCount = 0;
         animator = GetComponent<Animator>();
         timer = animateTime;
         skinnedMR.enabled = true;
         startUI.SetActive(true);
         setSkillUI.SetActive(false);
         selectGhost.SetActive(false);
+        backArrowImage.SetActive(false);
         fixedPosition = new Vector3(-30f, -13.5f, 40.7f);
         this.transform.position = fixedPosition;
         AudioManager.Instance.PlayBGM("TitleBGM");
@@ -40,6 +48,7 @@ public class TitleAnimation : MonoBehaviour
 
     private void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             pushSpaceCount++;
@@ -47,17 +56,25 @@ public class TitleAnimation : MonoBehaviour
             switch (pushSpaceCount)
             {
                 case 1:
+                    setSkillUI.SetActive(false);
+                    startUI.SetActive(true);
+                    selectGhost.SetActive(false);
+                    backArrowImage.SetActive(false);
+                    skinnedMR.enabled = true;
                     titleLogoAnimation.isAnimating = true;
                     return;
                 case 2:
                     setSkillUI.SetActive(true);
                     startUI.SetActive(false);
                     selectGhost.SetActive(true);
+                    backArrowImage.SetActive(true);
                     skinnedMR.enabled = false;
+                    backArrowGauge.fillAmount = 0;
                     return;
                 case 3:
                     setSkillUI.SetActive(false);
                     selectGhost.SetActive(false);
+                    backArrowImage.SetActive(false);
                     skinnedMR.enabled = true;
                     this.transform.position = new Vector3(0f, -5.9f, 8.2f);
                     this.transform.Rotate(0, 60, 0);
@@ -100,6 +117,35 @@ public class TitleAnimation : MonoBehaviour
             animateTime = 6;
             isAnimating = false;
         }
+
+        if (Input.GetKey(KeyCode.Q) && pushSpaceCount == 2)
+        {
+            qKeyHoldTime += Time.deltaTime;
+            qKeyHoldTime = Mathf.Clamp(qKeyHoldTime, 0f, holdDuration);
+
+
+            if(qKeyHoldTime >= holdDuration)
+            {
+                pushSpaceCount = 1;
+
+                setSkillUI.SetActive(false);
+                startUI.SetActive(true);
+                selectGhost.SetActive(false);
+                backArrowImage.SetActive(false);
+                skinnedMR.enabled = true;
+            }
+        }
+        else
+        {
+            if(pushSpaceCount != 2)
+            {
+                qKeyHoldTime = 0;
+            }
+            qKeyHoldTime -= Time.deltaTime * decayRate;
+            qKeyHoldTime = Mathf.Clamp(qKeyHoldTime, 0f, holdDuration);
+        }
+
+        backArrowGauge.fillAmount = qKeyHoldTime / holdDuration;
 
         // AttackとSurprisedの状態に応じてアニメーションを設定
         animator.SetBool("Attack", isAttacking);

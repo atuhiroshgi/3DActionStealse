@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     #region タイトルシーン
     private string skillName;
     private int selectedIndex;
+    private bool isMoving;
 
     public void ToGameScene()
     {
@@ -66,6 +67,16 @@ public class GameManager : MonoBehaviour
     public int GetSelectedIndex()
     {
         return selectedIndex;
+    }
+
+    public void SetGhostMoving(bool isMoving)
+    {
+        this.isMoving = isMoving;
+    }
+
+    public bool GetGhostMoving()
+    {
+        return isMoving;
     }
 
     #endregion
@@ -123,6 +134,11 @@ public class GameManager : MonoBehaviour
         {
             countdownTime -= Time.deltaTime;
         }
+    }
+
+    public void SetTime(float time)
+    {
+        countdownTime = time;
     }
 
     /// <summary>
@@ -192,6 +208,7 @@ public class GameManager : MonoBehaviour
     {
         return startFlag;
     }
+
     #endregion
 
     #region リザルトシーン

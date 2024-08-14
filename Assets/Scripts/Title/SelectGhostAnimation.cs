@@ -10,6 +10,7 @@ public class SelectGhostAnimation : MonoBehaviour
 
     private Vector3 targetPosition;
     private int selectedIndex = 0;
+    private bool isMoving = false;
 
     private void OnEnable()
     {
@@ -23,11 +24,15 @@ public class SelectGhostAnimation : MonoBehaviour
         {
             selectedIndex++;
             targetPosition += new Vector3(0, 12, 0);
+            isMoving = true;
+            GameManager.Instance.SetGhostMoving(isMoving);
         }
         if (Input.GetKeyDown(KeyCode.W) && selectedIndex != 0)
         {
             selectedIndex--;
             targetPosition -= new Vector3(0, 12, 0);
+            isMoving = true;
+            GameManager.Instance.SetGhostMoving(isMoving);
         }
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
@@ -40,6 +45,8 @@ public class SelectGhostAnimation : MonoBehaviour
 
     private void OnReachedTargetPosition()
     {
+        isMoving = false;
+        GameManager.Instance.SetGhostMoving(isMoving);
         GameManager.Instance.SetSelectedIndex(selectedIndex);
     }
 }

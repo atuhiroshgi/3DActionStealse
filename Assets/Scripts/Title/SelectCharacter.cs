@@ -10,8 +10,9 @@ public class SelectCharacter : MonoBehaviour
     [SerializeField] private GameObject[] characterIcons;
     [SerializeField] private Color defaultColor = Color.white;
     [SerializeField] private Color highlightColor = Color.yellow;
-    [SerializeField] private float moveSpeed = 5f;
-
+    
+    private float moveSpeed = 150f;
+    private float maxDistance = 20f;
     private int selectedIndex = 0;
 
     private void Start()
@@ -36,13 +37,24 @@ public class SelectCharacter : MonoBehaviour
 
         //最も近いアイコンを探す
         float closestDistance = float.MaxValue;
+        selectedIndex = -1;
+
         for (int i = 0; i < characterIcons.Length; i++)
         {
             float distance = Vector3.Distance(this.transform.position, characterIcons[i].transform.position);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
-                selectedIndex = i;
+                //一定距離の場合のみ選択
+                if(distance <= maxDistance)
+                {
+                    selectedIndex = i;
+                    GameManager.Instance.SetSelectedIndex(selectedIndex);
+                }
+                else
+                {
+                    GameManager.Instance.SetSelectedIndex(-1);
+                }
             }
         }
     }
@@ -55,8 +67,12 @@ public class SelectCharacter : MonoBehaviour
             icon.GetComponent<Image>().color = defaultColor;
         }
 
-        //選択中のアイコンの背景色をハイライト色に変更
-        characterIcons[selectedIndex].GetComponent<Image>().color = highlightColor;
+        if(selectedIndex >= 0 && selectedIndex < characterIcons.Length)
+        {
+            //選択中のアイコンの背景色をハイライト色に変更
+            characterIcons[selectedIndex].GetComponent<Image>().color = highlightColor;
+        }
+
     }
 
 }

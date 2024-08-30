@@ -99,7 +99,7 @@ public class PlayerController : Character
     private bool isRun = false;         //移動中かどうか
     private bool isNormalFound = false; //通常攻撃の範囲に敵がいるかどうか
     private bool jumpRequested = false; //ジャンプが要求されたかどうか
-    private int selectedIndex;
+    private int selectedIndex;          //選択キャラのインデックス
     #endregion
 
     protected override void Start()
@@ -139,6 +139,15 @@ public class PlayerController : Character
             jumpRequested = true;
         }
 
+        //1秒間ブースト
+        if(Input.GetKeyDown(KeyCode.Q) && selectedIndex == 0 && isGround)
+        {
+            if (skillGuageController.DecreasedStackCount(1))
+            {
+                StartCoroutine(AccelerateInDirection());
+            }
+        }
+
         //巨大化の処理
         if(Input.GetKeyDown(KeyCode.Q) && selectedIndex == 2 && !isHuge)
         {
@@ -150,15 +159,6 @@ public class PlayerController : Character
         else if(Input.GetKeyDown(KeyCode.Q) && isHuge)
         {
             ResizeInitialSize();
-        }
-
-        //1秒間ブースト
-        if(Input.GetKeyDown(KeyCode.Q) && selectedIndex == 0 && isGround)
-        {
-            if (skillGuageController.DecreasedStackCount(1))
-            {
-                StartCoroutine(AccelerateInDirection());
-            }
         }
 
         //攻撃を1回で済ませる処理をリセット

@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
 
     #region タイトルシーン
     private string skillName;
-    private int selectedIndex;
+    private int selectedIndex = -1;
     private bool isMoving;
 
     public void ToGameScene()
@@ -49,16 +49,10 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Game");
     }
 
-    public void SetSkill(string skillName)
-    {
-        this.skillName = skillName;
-    }
-
-    public string GetSkill()
-    {
-        return skillName;
-    }
-
+    /// <summary>
+    /// キャラ選択のときにどのスキルを使うか設定する
+    /// </summary>
+    /// <param name="selectedIndex"></param>
     public void SetSelectedIndex(int selectedIndex)
     {
         this.selectedIndex = selectedIndex;

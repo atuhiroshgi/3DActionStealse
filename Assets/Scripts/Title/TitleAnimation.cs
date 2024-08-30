@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class TitleAnimation : MonoBehaviour
     [SerializeField] private GameObject setSkillUI;
     [SerializeField] private GameObject selectGhost;
     [SerializeField] private GameObject backArrowImage;
+    [SerializeField] private GameObject RecommendStartImage;
     [SerializeField] private Image backArrowGauge;
     [SerializeField] private Material[] materials;
     
@@ -30,10 +32,12 @@ public class TitleAnimation : MonoBehaviour
     private bool isAnimating = false;
     private bool isAttacking = false;
     private bool isSurprised = false;
+    private int selectedIndex;
 
     private void Start()
     {
         pushSpaceCount = 0;
+        selectedIndex = -1;
         animator = GetComponent<Animator>();
         timer = animateTime;
         skinnedMR.enabled = true;
@@ -41,6 +45,7 @@ public class TitleAnimation : MonoBehaviour
         setSkillUI.SetActive(false);
         selectGhost.SetActive(false);
         backArrowImage.SetActive(false);
+        RecommendStartImage.SetActive(false);
         fixedPosition = new Vector3(-30f, -13.5f, 40.7f);
         this.transform.position = fixedPosition;
         AudioManager.Instance.PlayBGM("TitleBGM");
@@ -56,12 +61,7 @@ public class TitleAnimation : MonoBehaviour
             switch (pushSpaceCount)
             {
                 case 1:
-                    setSkillUI.SetActive(false);
-                    startUI.SetActive(true);
-                    selectGhost.SetActive(false);
-                    backArrowImage.SetActive(false);
-                    skinnedMR.enabled = true;
-                    titleLogoAnimation.isAnimating = true;
+                    MoveTitle();
                     return;
                 case 2:
                     setSkillUI.SetActive(true);
@@ -71,7 +71,13 @@ public class TitleAnimation : MonoBehaviour
                     skinnedMR.enabled = false;
                     backArrowGauge.fillAmount = 0;
                     return;
+
                 case 3:
+                    selectedIndex = GameManager.Instance.GetSelectedIndex();
+                    RecommendStartImage.SetActive(true);
+                    return;
+
+                case 4:
                     setSkillUI.SetActive(false);
                     selectGhost.SetActive(false);
                     backArrowImage.SetActive(false);
@@ -80,7 +86,6 @@ public class TitleAnimation : MonoBehaviour
                     this.transform.Rotate(0, 60, 0);
                     AudioManager.Instance.StopBGM();
 
-                    int selectedIndex = GameManager.Instance.GetSelectedIndex();
                     if(selectedIndex >= 0 && selectedIndex < materials.Length)
                     {
                         skinnedMR.material = materials[selectedIndex];
@@ -118,7 +123,7 @@ public class TitleAnimation : MonoBehaviour
             isAnimating = false;
         }
 
-        if (Input.GetKey(KeyCode.Q) && pushSpaceCount == 2)
+        if (Input.GetKey(KeyCode.Q) && pushSpaceCount == 2 || Input.GetKey(KeyCode.Q) && pushSpaceCount == 3)
         {
             qKeyHoldTime += Time.deltaTime;
             qKeyHoldTime = Mathf.Clamp(qKeyHoldTime, 0f, holdDuration);
@@ -127,12 +132,7 @@ public class TitleAnimation : MonoBehaviour
             if(qKeyHoldTime >= holdDuration)
             {
                 pushSpaceCount = 1;
-
-                setSkillUI.SetActive(false);
-                startUI.SetActive(true);
-                selectGhost.SetActive(false);
-                backArrowImage.SetActive(false);
-                skinnedMR.enabled = true;
+                MoveTitle();
             }
         }
         else
@@ -143,6 +143,12 @@ public class TitleAnimation : MonoBehaviour
             }
             qKeyHoldTime -= Time.deltaTime * decayRate;
             qKeyHoldTime = Mathf.Clamp(qKeyHoldTime, 0f, holdDuration);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Q) && pushSpaceCount == 3)
+        {
+            pushSpaceCount = 2;
+            RecommendStartImage.SetActive(false);
         }
 
         backArrowGauge.fillAmount = qKeyHoldTime / holdDuration;
@@ -245,5 +251,15 @@ public class TitleAnimation : MonoBehaviour
     public void MenuAnimation()
     {
         StartCoroutine(MoveUpAndBack());
+    }
+
+    private void MoveTitle()
+    {
+        setSkillUI.SetActive(false);
+        startUI.SetActive(true);
+        selectGhost.SetActive(false);
+        backArrowImage.SetActive(false);
+        skinnedMR.enabled = true;
+        titleLogoAnimation.isAnimating = true;
     }
 }

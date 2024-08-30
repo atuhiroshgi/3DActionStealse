@@ -56,6 +56,7 @@ public class TitleAnimation : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && !settingUI.isOpen)
         {
+            AudioManager.Instance.PlaySFX("DecideMenu");
             pushSpaceCount++;
 
             switch (pushSpaceCount)
@@ -128,9 +129,9 @@ public class TitleAnimation : MonoBehaviour
             qKeyHoldTime += Time.deltaTime;
             qKeyHoldTime = Mathf.Clamp(qKeyHoldTime, 0f, holdDuration);
 
-
             if(qKeyHoldTime >= holdDuration)
             {
+                AudioManager.Instance.PlaySFX("CancelMenu");
                 pushSpaceCount = 1;
                 MoveTitle();
             }
@@ -147,6 +148,7 @@ public class TitleAnimation : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Q) && pushSpaceCount == 3)
         {
+            AudioManager.Instance.PlaySFX("CancelMenu");
             pushSpaceCount = 2;
             RecommendStartImage.SetActive(false);
         }

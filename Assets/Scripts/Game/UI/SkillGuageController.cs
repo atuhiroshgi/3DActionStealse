@@ -98,6 +98,33 @@ public class SkillGuageController : MonoBehaviour
         return stackCount;
     }
 
+    public void IncreaseStackCount(int increaseNum)
+    {
+        bool stackIncrease = false;
+
+        if (stackCount + increaseNum <= 9)
+        {
+            stackCount += increaseNum;
+            stackIncrease = true;
+        }
+        else
+        {
+            stackCount = 9;
+        }
+
+        if (stackIncrease)
+        {
+            UpdateStackUI();
+        }
+
+        // ゲージを再開する処理を追加
+        if (stackCount < 9 && !progress)
+        {
+            ResetTimer();
+            progress = true;
+        }
+    }
+
     /// <summary>
     /// スタック数を他のクラスから減らすときに呼ぶ関数
     /// </summary>

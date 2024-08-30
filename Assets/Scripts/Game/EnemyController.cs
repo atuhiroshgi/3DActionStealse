@@ -9,6 +9,8 @@ public class EnemyController : Character
     [SerializeField] private Transform[] patrolPoints;
     [Header("Playerを格納")]
     [SerializeField] private PlayerController player;
+    [Header("スキルゲージを増やすため")]
+    [SerializeField] private SkillGuageController skilGuageController;
     [Header("パトロール速度")]
     [SerializeField] private float patrolSpeed = 2f;
     [Header("パトロールポイントでの待機時間")]
@@ -160,6 +162,7 @@ public class EnemyController : Character
     protected override void Die()
     {
         base.Die();
+        skilGuageController.IncreaseStackCount(2);
         StartCoroutine(PlayDownAndWakeUpAnimation());
     }
 

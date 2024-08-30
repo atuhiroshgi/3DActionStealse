@@ -1842,7 +1842,7 @@ GameObject:
   - component: {fileID: 402006450}
   - component: {fileID: 402006449}
   m_Layer: 0
-  m_Name: ??Ghost
+  m_Name: TwinGhost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6359,7 +6359,7 @@ GameObject:
   - component: {fileID: 1703157002}
   - component: {fileID: 1703157001}
   m_Layer: 0
-  m_Name: ??Ghost
+  m_Name: TornadoGhost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8396,6 +8396,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2392ed4fe3860254cb09551514ab81ed, type: 2}
   - {fileID: 2100000, guid: 049dedbe148a55646b82ad9838daf26c, type: 2}
   - {fileID: 2100000, guid: cf5d971e8738b7443baa201b7e8da25f, type: 2}
+  - {fileID: 2100000, guid: ffe87ac7835eb814ab7b9174b963748a, type: 2}
+  - {fileID: 2100000, guid: 75f85e79e47493f45b83bd25a8eedd23, type: 2}
   pushSpaceCount: 0
 --- !u!4 &3667070310416743802
 Transform:
@@ -8714,6 +8716,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 929afe4f392881442a507be8b4d7e48d, type: 3}
   - {fileID: 8300000, guid: a99347cca61040e4d95a13162182562a, type: 3}
   - {fileID: 8300000, guid: 08c0621eed2162c4b95e2a8558e1d679, type: 3}
+  - {fileID: 8300000, guid: 609e9a95d84db4f4c871f36dac347365, type: 3}
 --- !u!1 &5137295995542472712
 GameObject:
   m_ObjectHideFlags: 0
@@ -9539,6 +9542,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2392ed4fe3860254cb09551514ab81ed, type: 2}
   - {fileID: 2100000, guid: 049dedbe148a55646b82ad9838daf26c, type: 2}
   - {fileID: 2100000, guid: cf5d971e8738b7443baa201b7e8da25f, type: 2}
+  - {fileID: 2100000, guid: ffe87ac7835eb814ab7b9174b963748a, type: 2}
+  - {fileID: 2100000, guid: 75f85e79e47493f45b83bd25a8eedd23, type: 2}
 --- !u!137 &9199972817066131666
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0

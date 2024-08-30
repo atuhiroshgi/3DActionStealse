@@ -24266,6 +24266,7 @@ MonoBehaviour:
   - {fileID: 1681101583}
   - {fileID: 1713970145}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 0
   rotationSmoothTime: 0.1
@@ -32726,6 +32727,7 @@ MonoBehaviour:
   - {fileID: 1689256099}
   - {fileID: 2118074376}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 0
   rotationSmoothTime: 0.1
@@ -38815,6 +38817,7 @@ MonoBehaviour:
   - {fileID: 1764273087}
   - {fileID: 793378560}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 0
   rotationSmoothTime: 0.1
@@ -38954,6 +38957,7 @@ MonoBehaviour:
   - {fileID: 340344753}
   - {fileID: 681521654}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 0
   rotationSmoothTime: 0.1
@@ -50826,6 +50830,7 @@ MonoBehaviour:
   - {fileID: 400932393}
   - {fileID: 392304719}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 0
   rotationSmoothTime: 0.1
@@ -51024,6 +51029,7 @@ MonoBehaviour:
   - {fileID: 78997732}
   - {fileID: 950264111}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 5
   rotationSmoothTime: 0.1
@@ -52381,6 +52387,7 @@ MonoBehaviour:
   - {fileID: 1400318982}
   - {fileID: 1716627507}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 1
   rotationSmoothTime: 0.1
@@ -52943,6 +52950,7 @@ MonoBehaviour:
   - {fileID: 1120021026}
   - {fileID: 1531427295}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 0
   rotationSmoothTime: 0.1
@@ -54061,6 +54069,7 @@ MonoBehaviour:
   - {fileID: 442273448}
   - {fileID: 494040111}
   player: {fileID: 4259193691722310663}
+  skilGuageController: {fileID: 1553380644}
   patrolSpeed: 3
   waitTimeAtPoint: 0
   rotationSmoothTime: 0.1

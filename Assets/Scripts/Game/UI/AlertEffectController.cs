@@ -19,9 +19,12 @@ public class AlertEffectController : MonoBehaviour
     private float lastAlertLevel;
     private float blinkInterval = 0.2f;
     private bool isBlinking = false;
+    private bool isGameover = false;
 
     private void Start()
     {
+        isGameover = false;
+
         if(topAlertEffect == null)
         {
             topAlertEffect = GetComponent<Image>();
@@ -64,7 +67,10 @@ public class AlertEffectController : MonoBehaviour
         {
             float t = (alertLevel - 40) / 60f;
             newColor = Color.Lerp(yellowColor, redColor, t);
-
+        }
+        else if(alertLevel >= 100)
+        {
+            isGameover = true;
         }
 
         topAlertEffect.color = newColor;
@@ -82,5 +88,10 @@ public class AlertEffectController : MonoBehaviour
             alertEffect.gameObject.SetActive(true);
             yield return new WaitForSeconds(blinkInterval);
         }
+    }
+
+    public bool GetIsGameover()
+    {
+        return isGameover;
     }
 }

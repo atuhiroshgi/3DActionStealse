@@ -132,6 +132,6 @@ public class AudioManager : MonoBehaviour
         bgmSource.Stop();
         bgmSource.clip = null;
         sfxSource.Stop();
-        sfxSource.Stop();
+        sfxSource.clip = null;
     }
 }

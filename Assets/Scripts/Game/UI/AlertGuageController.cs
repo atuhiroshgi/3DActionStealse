@@ -14,10 +14,13 @@ public class AlertGuageController : MonoBehaviour
 
     private float maxAlertLevel = 100f;
     private float currentAlertLevel = 0f;
+    private bool isGameOver = false;
 
     private void Start()
     {
         UpdateAlertLevel(GameManager.Instance.GetAlertLevel());
+        Debug.Log("このスクリプトは " + gameObject.name + " にアタッチされています。");
+        isGameOver = false;
     }
 
     private void Update()
@@ -45,7 +48,11 @@ public class AlertGuageController : MonoBehaviour
 
         if(currentAlertLevel >= 100)
         {
-            GameManager.Instance.ToFailedScene();
+            isGameOver = true;
         }
+    }
+
+    public bool GetIsGameOver() {
+        return isGameOver;
     }
 }

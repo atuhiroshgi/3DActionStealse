@@ -20098,6 +20098,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slideUIController: {fileID: 2091056073}
   playerController: {fileID: 4259193691722310663}
+  alertEffectController: {fileID: 1828944408}
   startCountdownWindow: {fileID: 1821943674}
   startCountdownText: {fileID: 411879590}
   finishCountdownText: {fileID: 1100925370}

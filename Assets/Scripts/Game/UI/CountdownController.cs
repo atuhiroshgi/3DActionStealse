@@ -11,10 +11,12 @@ public class CountdownController : MonoBehaviour
     [SerializeField] private Text finishCountdownText;
 
     private float startCountdown = 3f;
-    private bool onceSlide = false;
+    private bool onceSlide;
 
     private void Start()
     {
+        onceSlide = false;
+
         GameManager.Instance.SetStartFlag(false);
         finishCountdownText.gameObject.SetActive(false);
 
@@ -34,10 +36,17 @@ public class CountdownController : MonoBehaviour
             }
         }
 
+        if (GameManager.Instance.GetAllCaptured() && !onceSlide)
+        {
+            Debug.Log("’Ê‚Á‚Ä‚ñ‚Å");
+            onceSlide = true;
+            StartCoroutine(FinishUI(true));
+        }
+
         if(GameManager.Instance.GetTime() <= 1 && !onceSlide)
         {
             onceSlide = true;
-            StartCoroutine(FinishUI());
+            StartCoroutine(FinishUI(false));
         }
     }
 
@@ -60,12 +69,20 @@ public class CountdownController : MonoBehaviour
         GameManager.Instance.SetStartFlag(true);
     }
 
-    private IEnumerator FinishUI()
+    private IEnumerator FinishUI(bool result)
     {
         GameManager.Instance.SetStartFlag(false);
         yield return new WaitForSeconds(1.0f);
         slideUIController.state = 1;
         yield return new WaitForSeconds(3.0f);
-        GameManager.Instance.ToFailedScene();
+
+        if (result)
+        {
+            GameManager.Instance.ToClearScene();
+        }
+        else
+        {
+            GameManager.Instance.ToFailedScene();
+        }
     }
 }

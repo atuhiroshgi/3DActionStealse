@@ -75,6 +75,11 @@ public class CheckPoint : MonoBehaviour
                 break;
         }
 
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            CaptureCheckPoint();
+        }
+
         //進捗ゲージのUI更新
         UpdateProgressUI();
     }

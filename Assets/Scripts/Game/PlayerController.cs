@@ -231,6 +231,8 @@ public class PlayerController : Character
         //‰ŠúƒTƒCƒY‚Ìİ’è
         ghostTransform.localScale = initialScale;
         UpdateColliderSize();
+
+        GameManager.Instance.ResetAlertLevel();
     }
      
     /// <summary>

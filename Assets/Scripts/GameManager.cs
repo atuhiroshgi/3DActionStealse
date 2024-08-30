@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
     private float countdownTime = 180;
     private bool playerInSight = false;
     private bool startFlag = false;
+    private bool allCaptured;
 
     private void Update()
     {
@@ -115,8 +116,19 @@ public class GameManager : MonoBehaviour
 
         if (allCaptured)
         {
-            ToClearScene();
+            SetAllCaptured();
         }
+    }
+
+    private void SetAllCaptured()
+    {
+        allCaptured = true;
+        Debug.Log("ëSêßîe");
+    }
+
+    public bool GetAllCaptured()
+    {
+        return allCaptured;
     }
 
     /// <summary>
@@ -142,6 +154,11 @@ public class GameManager : MonoBehaviour
     public float GetTime()
     {
         return countdownTime;
+    }
+
+    public void ResetAlertLevel()
+    {
+        AlertLevel = 0;
     }
 
     /// <summary>

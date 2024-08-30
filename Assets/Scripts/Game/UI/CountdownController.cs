@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CountdownController : MonoBehaviour
 {
     [SerializeField] private SlideUIController slideUIController;
+    [SerializeField] private PlayerController playerController;
     [SerializeField] private GameObject startCountdownWindow;
     [SerializeField] private Text startCountdownText;
     [SerializeField] private Text finishCountdownText;
@@ -43,7 +44,7 @@ public class CountdownController : MonoBehaviour
             StartCoroutine(FinishUI(true));
         }
 
-        if(GameManager.Instance.GetTime() <= 1 && !onceSlide)
+        if(GameManager.Instance.GetTime() <= 1 && !onceSlide || playerController.IsDead() && !onceSlide)
         {
             onceSlide = true;
             StartCoroutine(FinishUI(false));

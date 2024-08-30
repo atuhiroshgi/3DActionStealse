@@ -10,13 +10,11 @@ public class PlayerController : Character
 {
     #region SerializeField
     [Header("通常時のマテリアル")]
-    [SerializeField] private Material normalMaterial;
-    [Header("透明化モードのマテリアル")]
-    [SerializeField] private Material normalMaterial2;
-    [Header("巨大化モードのマテリアル")]
-    [SerializeField] private Material normalMaterial3;
+    [SerializeField] private Material[] normalMaterials;
     [Header("透明化時のマテリアル")]
     [SerializeField] private Material hiddenMaterial;
+    [Header("高速時のマテリアル")]
+    [SerializeField] private Material fastMaterial;
     [Header("プレイヤーの初期スポーン")]
     [SerializeField] private Transform startPos;
     [Header("照準のUI")]
@@ -49,6 +47,8 @@ public class PlayerController : Character
     [SerializeField] private float chargeAttackRange;
     [Header("透明化継続時間")]
     [SerializeField] private float hideDuration = 3f;
+    [Header("高速化継続時間")]
+    [SerializeField] private float fastDuration = 3f;
     [Header("巨大化継続時間")]
     [SerializeField] private float hugeTime = 5f;
     #endregion
@@ -84,14 +84,16 @@ public class PlayerController : Character
     private float moveSpeedIn;          //スピード管理用
     private float defaultMoveSpeed = 8f;//通常時の移動速度
     private float hiddenMoveSpeed = 15f;//隠れ時の移動速度
-    private float hugeMoveSpeed = 12f;//隠れ時の移動速度
+    private float fastMoveSpeed = 30f;  //高速化時の移動速度
+    private float hugeMoveSpeed = 12f;  //巨大化時の移動速度
     private float defaultJumpForce = 7f;//通常時のジャンプする力
     private float hiddenJumpForce = 12f;//隠れ時のジャンプする力
-    private float hugeJumpForce = 12f;
+    private float hugeJumpForce = 12f;  //巨大化時のジャンプする力
     private float attackDuration = 0.8f;//攻撃アニメーションの長さ
     private float chargeDuration = 1.6f;//チャージアニメーションの長さ
     private float damageDuration = 0.6f;//ダメージアニメーションの長さ
     private float currentHideTime = 0f;
+    private float currentFastTime = 0f;
     private float accelerationDuration = 0.5f;
     private float accelerationMultiplier = 2f;
     private float upwardForce = 1f;
@@ -99,6 +101,7 @@ public class PlayerController : Character
     private bool isRun = false;         //移動中かどうか
     private bool isNormalFound = false; //通常攻撃の範囲に敵がいるかどうか
     private bool jumpRequested = false; //ジャンプが要求されたかどうか
+    private bool isFast = false;        //高速化中かどうか
     private int selectedIndex;          //選択キャラのインデックス
     #endregion
 
@@ -121,6 +124,7 @@ public class PlayerController : Character
         RotatePlayer();
         Jump();
         Hidden();
+        Fast();
         Raycast();
         
         //攻撃の処理
@@ -167,6 +171,11 @@ public class PlayerController : Character
             onceAttack = false;
         }
 
+        if(this.transform.position.y <= -33)
+        {
+            isDead = true;
+        }
+
         animator.SetBool("isRun", isRun);
 
         //デバッグ用
@@ -190,6 +199,8 @@ public class PlayerController : Character
 
     protected override void Init()
     {
+        isDead = false;
+
         //プレイヤーの速度の初期化
         moveSpeedIn = defaultMoveSpeed;
 
@@ -207,20 +218,7 @@ public class PlayerController : Character
         selectedIndex = GameManager.Instance.GetSelectedIndex();
 
         //どのモードのマテリアルか決める
-        switch (selectedIndex)
-        {
-            case 0:
-                defaultMaterial = normalMaterial;
-                break;
-
-            case 1:
-                defaultMaterial = normalMaterial2;
-                break;
-
-            case 2:
-                defaultMaterial = normalMaterial3;
-                break;
-        }
+        defaultMaterial = normalMaterials[selectedIndex];
 
         //マテリアルの初期化
         skinnedMR.material = defaultMaterial;
@@ -233,6 +231,7 @@ public class PlayerController : Character
         UpdateColliderSize();
 
         GameManager.Instance.ResetAlertLevel();
+        GameManager.Instance.SetAllCaptured(false);
     }
      
     /// <summary>
@@ -370,6 +369,72 @@ public class PlayerController : Character
         skinnedMR.material = defaultMaterial;
         moveSpeedIn = defaultMoveSpeed;
         jumpForce = defaultJumpForce;
+    }
+
+    /// <summary>
+    /// 高速モードに関する処理
+    /// </summary>
+    private void Fast()
+    {
+        if (Input.GetKeyDown(KeyCode.Q) && selectedIndex == 3)
+        {
+            if (isFast)
+            {
+                //高速化を任意のタイミングで解除
+                EndFast();
+            }
+            else
+            {
+                if (skillGuageController.DecreasedStackCount((1)))
+                {
+                    //スタックが1あるなら減らして透明化を開始する
+                    StartCoroutine(StartFastTimer());
+                }
+                else
+                {
+                    Debug.Log("スタックが足りません");
+                }
+            }
+        }
+
+        if (isFast && currentFastTime > fastDuration)
+        {
+            //制限時間が終わったら透明化を解除
+            EndFast();
+        }
+    }
+
+    /// <summary>
+    /// 高速化のタイマーを開始するコルーチン
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator StartFastTimer()
+    {
+        isFast = true;
+        //白めのマテリアルに変更
+        skinnedMR.material = fastMaterial;
+        moveSpeedIn = fastMoveSpeed;
+        
+        currentFastTime = 0;
+
+        while (currentFastTime < fastDuration)
+        {
+            //一定時間ループしてディレイをかける
+            yield return null;
+            currentFastTime += Time.deltaTime;
+        }
+
+        EndFast();
+    }
+
+    /// <summary>
+    /// 高速化を終了する処理
+    /// </summary>
+    private void EndFast()
+    {
+        isFast = false;
+        skinnedMR.material = defaultMaterial;
+        moveSpeedIn = defaultMoveSpeed;
     }
 
     /// <summary>

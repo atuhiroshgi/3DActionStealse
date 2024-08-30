@@ -53,6 +53,11 @@ public abstract class Character : MonoBehaviour
         isDead = true;
     }
 
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
     protected void Move(Vector3 direction, float speed)
     {
         transform.position += direction * speed * Time.deltaTime;

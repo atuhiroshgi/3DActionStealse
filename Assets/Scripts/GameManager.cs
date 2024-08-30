@@ -116,14 +116,13 @@ public class GameManager : MonoBehaviour
 
         if (allCaptured)
         {
-            SetAllCaptured();
+            SetAllCaptured(true);
         }
     }
 
-    private void SetAllCaptured()
+    public void SetAllCaptured(bool allCaptured)
     {
-        allCaptured = true;
-        Debug.Log("ëSêßîe");
+        this.allCaptured = allCaptured;
     }
 
     public bool GetAllCaptured()

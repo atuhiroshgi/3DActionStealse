@@ -46,7 +46,7 @@ public class CheckPoint : MonoBehaviour
     private MeshRenderer meshRenderer;      //丸いやつのMeshRendererを参照するため
     private CheckpointState currentState = CheckpointState.Idle;
     private float captureProgress = 0f;     //チェックポイントの制覇進捗
-    private bool isCaptured = false;        //チェックポイントが制覇されているかどうか
+    private bool isCaptured;        //チェックポイントが制覇されているかどうか
     #endregion
 
     private void Start()
@@ -86,6 +86,8 @@ public class CheckPoint : MonoBehaviour
 
     private void Init()
     {
+        isCaptured = false;
+
         //初期状態ではおすすめUIを非表示に設定
         recommendUI.SetActive(false);
         //初期状態では進捗ゲージを非表示に設定

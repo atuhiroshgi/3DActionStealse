@@ -24274,7 +24274,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 50
   sightAngle: 90
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!4 &38312687259133199
 Transform:
   m_ObjectHideFlags: 0
@@ -32735,7 +32735,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 25
   sightAngle: 60
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!1 &2724134627186868543
 GameObject:
   m_ObjectHideFlags: 0
@@ -38825,7 +38825,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 50
   sightAngle: 90
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!4 &4333665224005264333
 Transform:
   m_ObjectHideFlags: 0
@@ -38965,7 +38965,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 20
   sightAngle: 60
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!4 &4362602342743839909
 Transform:
   m_ObjectHideFlags: 0
@@ -50838,7 +50838,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 50
   sightAngle: 90
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!4 &8003159176818819036
 Transform:
   m_ObjectHideFlags: 0
@@ -51037,7 +51037,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 25
   sightAngle: 60
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!4 &8046576359669131340
 Transform:
   m_ObjectHideFlags: 0
@@ -52395,7 +52395,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 25
   sightAngle: 60
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!4 &8494780194177680452
 Transform:
   m_ObjectHideFlags: 0
@@ -52958,7 +52958,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 25
   sightAngle: 60
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!1 &8641839127892896774
 GameObject:
   m_ObjectHideFlags: 0
@@ -54077,7 +54077,7 @@ MonoBehaviour:
   maxRotationSpeed: 360
   sightRange: 50
   sightAngle: 60
-  alertIncreaseAmount: 0.02
+  alertIncreaseAmount: 0.01
 --- !u!1 &8900436166912768328
 GameObject:
   m_ObjectHideFlags: 0

@@ -114,6 +114,43 @@ public class PlayerController : Character
         Init();
     }
 
+    protected override void Init()
+    {
+        isDead = false;
+
+        //プレイヤーの速度の初期化
+        moveSpeedIn = defaultMoveSpeed;
+
+        //Playerが湧く位置の初期化
+        if (startPos != null)
+        {
+            transform.position = startPos.position;
+            transform.rotation = startPos.rotation;
+        }
+        else
+        {
+            Debug.LogError("StartPosが設定されていません。");
+        }
+
+        selectedIndex = GameManager.Instance.GetSelectedIndex();
+
+        //どのモードのマテリアルか決める
+        defaultMaterial = normalMaterials[selectedIndex];
+
+        //マテリアルの初期化
+        skinnedMR.material = defaultMaterial;
+
+        //クロスヘアの初期化
+        crosshair.sprite = defaultCrosshairImage;
+
+        //初期サイズの設定
+        ghostTransform.localScale = initialScale;
+        UpdateColliderSize();
+
+        GameManager.Instance.ResetAlertLevel();
+        GameManager.Instance.SetAllCaptured(false);
+    }
+
     private void Update()
     {
         if (!GameManager.Instance.GetStartFlag())
@@ -197,42 +234,6 @@ public class PlayerController : Character
         }
     }
 
-    protected override void Init()
-    {
-        isDead = false;
-
-        //プレイヤーの速度の初期化
-        moveSpeedIn = defaultMoveSpeed;
-
-        //Playerが湧く位置の初期化
-        if (startPos != null)
-        {
-            transform.position = startPos.position;
-            transform.rotation = startPos.rotation;
-        }
-        else
-        {
-            Debug.LogError("StartPosが設定されていません。");
-        }
-
-        selectedIndex = GameManager.Instance.GetSelectedIndex();
-
-        //どのモードのマテリアルか決める
-        defaultMaterial = normalMaterials[selectedIndex];
-
-        //マテリアルの初期化
-        skinnedMR.material = defaultMaterial;
-
-        //クロスヘアの初期化
-        crosshair.sprite = defaultCrosshairImage;
-
-        //初期サイズの設定
-        ghostTransform.localScale = initialScale;
-        UpdateColliderSize();
-
-        GameManager.Instance.ResetAlertLevel();
-        GameManager.Instance.SetAllCaptured(false);
-    }
      
     /// <summary>
     /// プレイヤーの動きを制限
@@ -697,7 +698,11 @@ public class PlayerController : Character
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            GameManager.Instance.SetTime(10);
+            GameManager.Instance.SetTime(35);
+        }
+
+        if(Input.GetKeyDown(KeyCode.R)){
+            GameManager.Instance.ResetAlertLevel();
         }
     }
 }

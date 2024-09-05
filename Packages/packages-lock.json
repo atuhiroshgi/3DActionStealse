@@ -54,8 +54,8 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.modules.uielements": "1.0.0",
-        "com.unity.timeline": "1.2.18"
+        "com.unity.timeline": "1.2.18",
+        "com.unity.modules.uielements": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -69,8 +69,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.18",
-      "depth": 1,
+      "version": "2.0.22",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.9"
@@ -181,9 +181,9 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.director": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://packages.unity.com"
@@ -193,8 +193,8 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.film-internal-utilities": "0.18.4-preview",
-        "com.unity.render-pipelines.core": "10.0.0"
+        "com.unity.render-pipelines.core": "10.0.0",
+        "com.unity.film-internal-utilities": "0.18.4-preview"
       },
       "url": "https://packages.unity.com"
     },

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class PlayerController : Character
 {
@@ -82,6 +83,7 @@ public class PlayerController : Character
     private float rotAngle;             //現在の回転する角度
     private float maxAngVelo = float.PositiveInfinity;     //最大の回転角
     private float moveSpeedIn;          //スピード管理用
+    private float currentMoveSpeed;
     private float defaultMoveSpeed = 8f;//通常時の移動速度
     private float hiddenMoveSpeed = 15f;//隠れ時の移動速度
     private float fastMoveSpeed = 30f;  //高速化時の移動速度
@@ -120,6 +122,7 @@ public class PlayerController : Character
 
         //プレイヤーの速度の初期化
         moveSpeedIn = defaultMoveSpeed;
+        currentMoveSpeed = moveSpeedIn;
 
         //Playerが湧く位置の初期化
         if (startPos != null)
@@ -266,6 +269,15 @@ public class PlayerController : Character
             moveDirection += cameraRight;
         }
 
+        if (WallChecker.tatchWall)
+        {
+            moveSpeedIn = 2f;
+        }
+        else
+        {
+            moveSpeedIn = currentMoveSpeed;
+        }
+
         //移動方向に速度をかけて移動
         rb.MovePosition(transform.position + moveDirection.normalized * moveSpeedIn * Time.deltaTime);
 
@@ -347,6 +359,7 @@ public class PlayerController : Character
         //半透明のマテリアルに変更
         skinnedMR.material = hiddenMaterial;
         moveSpeedIn = hiddenMoveSpeed;
+        currentMoveSpeed = moveSpeedIn;
         jumpForce = hiddenJumpForce;
 
         currentHideTime = 0;
@@ -369,6 +382,7 @@ public class PlayerController : Character
         isHidden = false;
         skinnedMR.material = defaultMaterial;
         moveSpeedIn = defaultMoveSpeed;
+        currentMoveSpeed = moveSpeedIn;
         jumpForce = defaultJumpForce;
     }
 
@@ -415,6 +429,7 @@ public class PlayerController : Character
         //白めのマテリアルに変更
         skinnedMR.material = fastMaterial;
         moveSpeedIn = fastMoveSpeed;
+        currentMoveSpeed = moveSpeedIn;
         
         currentFastTime = 0;
 
@@ -436,6 +451,7 @@ public class PlayerController : Character
         isFast = false;
         skinnedMR.material = defaultMaterial;
         moveSpeedIn = defaultMoveSpeed;
+        currentMoveSpeed = moveSpeedIn;
     }
 
     /// <summary>
@@ -653,6 +669,7 @@ public class PlayerController : Character
         isHuge = false;
         ghostTransform.localScale = initialScale;
         moveSpeedIn = defaultMoveSpeed;
+        currentMoveSpeed = moveSpeedIn;
         jumpForce = defaultJumpForce;
         UpdateColliderSize();
     }
@@ -661,6 +678,7 @@ public class PlayerController : Character
         isHuge = true;
         ghostTransform.localScale = hugeScale;
         moveSpeedIn = hugeMoveSpeed;
+        currentMoveSpeed = moveSpeedIn;
         jumpForce = hugeJumpForce;
         UpdateColliderSize();
     }
